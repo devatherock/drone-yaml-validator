@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  publish:
+    docker:
+    - image: docker:17.06.2-ce
+    working_directory: ~/drone-yaml-validator
+    steps:
+    - checkout
+    - setup_remote_docker:
+        docker_layer_caching: true
+    - run: |
+        TAG=1.0.0
+        docker build -t devatherock/drone-yaml-validator:$TAG .
+        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        docker push devatherock/drone-yaml-validator:$TAG
+
+workflows:
+  version: 2
+  docker-publish:
+    jobs:
+    - publish:
+        filters:
+          branches:
+            only: master
