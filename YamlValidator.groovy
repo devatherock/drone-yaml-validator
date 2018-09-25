@@ -8,8 +8,7 @@ import java.util.logging.Level
 import org.yaml.snakeyaml.Yaml
 import java.util.function.Supplier
 
-System.setProperty('java.util.logging.SimpleFormatter.format',
-        '%1$tY-%1$tm-%1$tdT%1$tH:%1$tM:%1$tS.%1$tL%1$tz %4$s %5$s%6$s%n')
+System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%n')
 @Field static final Logger LOGGER = Logger.getLogger('YamlValidator.log')
 @Field boolean debug
 
@@ -36,7 +35,7 @@ validateYamlFiles(new File(System.properties['user.dir']))
  * @return
  */
 def validateYamlFiles(File directory) {
-    debugLog({ "Starting validation of YAML files in directory '${directory}'.".toString() })
+    debugLog({ "Validating files in '${directory}'".toString() })
 
     String fileName
     directory.eachFile { file ->
@@ -46,7 +45,7 @@ def validateYamlFiles(File directory) {
         } else if (file.isFile()) {
             fileName = file.absolutePath
             if (fileName.endsWith('.yaml') || fileName.endsWith('.yml')) {
-                debugLog({"Starting validation of YAML file '$fileName'.".toString()})
+                debugLog({"Validating '$fileName'.".toString()})
                 int index = 1
 
                 file.withInputStream { yamlFileInputStream ->
@@ -59,11 +58,11 @@ def validateYamlFiles(File directory) {
                         }
                     }
                     catch (Exception e) {
-                        LOGGER.log(Level.SEVERE, "Validation of YAML file '${fileName}' failed.", e)
+                        LOGGER.log(Level.SEVERE, "'${fileName}' is invalid", e)
                         System.exit(1)
                     }
                 }
-                LOGGER.info("Validation of YAML file '$fileName' successful.")
+                LOGGER.info("'$fileName' is valid")
             }
         }
     }
