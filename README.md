@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/devaprasadh/drone-yaml-validator.svg?style=svg)](https://circleci.com/gh/devaprasadh/drone-yaml-validator)
+[![Docker Pulls](https://img.shields.io/docker/pulls/devatherock/drone-yaml-validator.svg)](https://hub.docker.com/r/devatherock/drone-yaml-validator/)
 # drone-yaml-validator
 drone.io/CircleCI plugin to validate yaml files
 
