@@ -14,15 +14,8 @@ System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%n')
 
 def cli = new CliBuilder(usage: 'groovy YamlValidator.groovy [options]')
 cli._(longOpt: 'debug', args: 1, argName: 'debug', 'Flag to turn on debug logging')
-cli._(longOpt: 'test', args: 0, argName: 'test', 'Flag to build grape cache and exit')
 
 def options = cli.parse(args)
-if(options.test) {
-    LOGGER.info({"Grape cache built".toString()})
-    System.exit(0)
-}
-
-
 debug = Boolean.parseBoolean(options.debug)
 
 @Field Yaml yaml = new Yaml()

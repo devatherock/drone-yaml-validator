@@ -5,8 +5,8 @@ MAINTAINER 'Devaprasadh.Xavier <devatherock@gmail.com>'
 ENV PLUGIN_DEBUG false
 ADD YamlValidator.groovy /scripts/YamlValidator.groovy
 
-# Command to build the grape cache in advance
-RUN groovy /scripts/YamlValidator.groovy --test
+# Build the grape cache in advance
+RUN grape install org.yaml snakeyaml 1.20
 
 ADD entry-point.sh /scripts/entry-point.sh
 
