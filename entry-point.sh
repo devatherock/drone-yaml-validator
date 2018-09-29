@@ -1,1 +1,1 @@
-groovy /scripts/YamlValidator.groovy --debug $PLUGIN_DEBUG
+java -jar /scripts/YamlValidator.jar --debug $PLUGIN_DEBUG

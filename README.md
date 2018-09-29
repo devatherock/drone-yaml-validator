@@ -10,24 +10,24 @@ drone.io/CircleCI plugin to validate yaml files
 ```yaml
 version: 2
 jobs:
-  validate-yamls:
+  validate_yamls:
     docker:
-    - image: devatherock/drone-yaml-validator:1.0.0
+      - image: devatherock/drone-yaml-validator:1.0.0
     working_directory: ~/my-repo
     environment:
       PLUGIN_DEBUG: false                                      # Flag to enable debug logs. Optional, by default, debug logs are disabled
     steps:
-    - checkout
-    - run: sh /scripts/entry-point.sh
+      - checkout
+      - run: sh /scripts/entry-point.sh
            
 workflows:
   version: 2
-  yaml-validator:
+  yaml_validator:
     jobs:
-    - sync:
-        filters:
-          branches:
-            only: master                                       # Source branch
+   	  - sync:
+          filters:
+            branches:
+              only: master                                       # Source branch
 ```
 
 ### On tag

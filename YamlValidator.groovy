@@ -1,6 +1,7 @@
 
 @Grapes([
-    @Grab(group = 'org.yaml', module = 'snakeyaml', version = '1.20')
+    @Grab(group = 'org.yaml', module = 'snakeyaml', version = '1.20'),
+    @Grab(group = 'commons-cli', module ='commons-cli', version = '1.4')
 ])
 import groovy.transform.Field
 import java.util.logging.Logger

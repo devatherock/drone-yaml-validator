@@ -1,24 +1,36 @@
 version: 2
 jobs:
+  groovy_script_to_jar:
+    docker:
+      - image: devatherock/drone-groovy-script-to-jar:2.4-alpine
+    working_directory: ~/drone-yaml-validator
+    environment:
+      PLUGIN_SCRIPT_PATH: YamlValidator.groovy
+    steps:
+      - checkout
+      - run: sh /scripts/entry-point.sh
   publish:
     docker:
-    - image: docker:17.06.2-ce
+      - image: docker:17.06.2-ce
     working_directory: ~/drone-yaml-validator
     steps:
-    - checkout
-    - setup_remote_docker:
-        docker_layer_caching: true
-    - run: |
-        TAG=1.0.0
-        docker build -t devatherock/drone-yaml-validator:$TAG .
-        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        docker push devatherock/drone-yaml-validator:$TAG
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: |
+          TAG=1.0.0
+          docker build -t devatherock/drone-yaml-validator:$TAG .
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push devatherock/drone-yaml-validator:$TAG
 
 workflows:
   version: 2
-  docker-publish:
+  build_publish:
     jobs:
-    - publish:
-        filters:
-          branches:
-            only: master
+      - groovy_script_to_jar:
+          filters:
+            branches:
+              only: master
+      - publish:
+          requires:
+            - groovy_script_to_jar

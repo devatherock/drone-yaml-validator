@@ -8,3 +8,6 @@
 
 ### 2018-09-28
 - Build the grape cache in advance using `grape install`
+
+### 2018-09-29
+- Packaged the script into an executable jar using `drone-groovy-script-to-jar` plugin

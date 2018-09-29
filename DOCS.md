@@ -9,7 +9,7 @@ The following parameters can be set to configure the plugin.
 
 ```yaml
 pipeline:
-  yaml-validator:
+  yaml_validator:
     when:
       branch: master
       event: push
@@ -21,7 +21,7 @@ pipeline:
 
 ```yaml
 pipeline:
-  yaml-validator:
+  yaml_validator:
     when:
       ref: refs/tags/v*
       event: tag
