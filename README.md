@@ -24,7 +24,7 @@ workflows:
   version: 2
   yaml_validator:
     jobs:
-   	  - sync:
+      - validate_yamls:
           filters:
             branches:
               only: master                                       # Source branch
