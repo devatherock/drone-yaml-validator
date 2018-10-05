@@ -13,6 +13,17 @@ jobs:
           root: ~/drone-yaml-validator
           paths:
             - YamlValidator.jar
+  docker_build_dry_run:
+    docker:
+      - image: docker:17.06.2-ce
+    working_directory: ~/drone-yaml-validator
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - attach_workspace:
+          at: ~/drone-yaml-validator    
+      - run: docker build .   
   publish:
     docker:
       - image: docker:17.06.2-ce
@@ -40,3 +51,12 @@ workflows:
       - publish:
           requires:
             - groovy_script_to_jar
+  pr_check:
+    jobs:
+      - groovy_script_to_jar:
+          filters:
+            branches:
+              ignore: master
+      - docker_build_dry_run:
+          requires:
+            - groovy_script_to_jar            
