@@ -14,3 +14,4 @@
 
 ### 2018-10-04
 - Step to check docker build during PR
+- Upgraded docker image version to `17.12.1-ce`
