@@ -11,3 +11,6 @@
 
 ### 2018-09-29
 - Packaged the script into an executable jar using `drone-groovy-script-to-jar` plugin
+
+### 2018-10-04
+- Step to check docker build during PR
