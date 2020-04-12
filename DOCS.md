@@ -5,7 +5,7 @@ The following parameters can be set to configure the plugin.
 * **debug** - Flag to enable debug logs. Optional, by default, debug logs are disabled
 
 ## Examples
-### On push
+### drone
 
 ```yaml
 pipeline:
@@ -13,17 +13,19 @@ pipeline:
     when:
       branch: master
       event: push
-    image: devatherock/drone-yaml-validator:1.0.0
+    image: devatherock/drone-yaml-validator:1.0.1
     debug: true
 ```
 
-### On tag
+### vela
 
 ```yaml
-pipeline:
-  yaml_validator:
-    when:
-      ref: refs/tags/v*
-      event: tag
-    image: devatherock/drone-yaml-validator:1.0.0
+steps:
+  - name: yaml_validator
+    ruleset:
+      branch: master
+      event: push
+    image: devatherock/vela-yaml-validator:1.0.1
+    parameters:
+      debug: true
 ```

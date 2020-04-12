@@ -12,14 +12,14 @@ version: 2
 jobs:
   validate_yamls:
     docker:
-      - image: devatherock/drone-yaml-validator:1.0.0
+      - image: devatherock/drone-yaml-validator:1.0.1
     working_directory: ~/my-repo
     environment:
       PLUGIN_DEBUG: false                                      # Flag to enable debug logs. Optional, by default, debug logs are disabled
     steps:
       - checkout
       - run: sh /scripts/entry-point.sh
-           
+
 workflows:
   version: 2
   yaml_validator:
@@ -38,5 +38,5 @@ tags:
   only: /^v[0-9\.]+$/       # Regex to match tag pattern
 ```
 
-## drone.io
+## drone.io or vela
 Please refer [docs](DOCS.md)

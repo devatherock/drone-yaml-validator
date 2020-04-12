@@ -1,8 +1,12 @@
+docker_image: &docker_image
+  docker:
+    - image: docker:19.03.6
+
 version: 2
 jobs:
   groovy_script_to_jar:
     docker:
-      - image: devatherock/drone-groovy-script-to-jar:2.4-alpine
+      - image: devatherock/drone-groovy-script-to-jar:2.5-alpine
     working_directory: ~/drone-yaml-validator
     environment:
       PLUGIN_SCRIPT_PATH: YamlValidator.groovy
@@ -14,31 +18,28 @@ jobs:
           paths:
             - YamlValidator.jar
   docker_build_dry_run:
-    docker:
-      - image: docker:17.12.1-ce
+    <<: *docker_image
     working_directory: ~/drone-yaml-validator
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - attach_workspace:
-          at: ~/drone-yaml-validator    
-      - run: docker build .   
+          at: ~/drone-yaml-validator
+      - run: docker build .
   publish:
-    docker:
-      - image: docker:17.12.1-ce
+    <<: *docker_image
     working_directory: ~/drone-yaml-validator
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - attach_workspace:
-          at: ~/drone-yaml-validator    
+          at: ~/drone-yaml-validator
       - run: |
-          TAG=1.0.0
-          docker build -t devatherock/drone-yaml-validator:$TAG .
+          TAG=1.0.1
+          docker build -t devatherock/drone-yaml-validator:$TAG -t devatherock/vela-yaml-validator:$TAG .
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push devatherock/drone-yaml-validator:$TAG
+          docker push devatherock/vela-yaml-validator:$TAG
 
 workflows:
   version: 2
@@ -59,4 +60,4 @@ workflows:
               ignore: master
       - docker_build_dry_run:
           requires:
-            - groovy_script_to_jar            
+            - groovy_script_to_jar
