@@ -15,3 +15,8 @@
 ### 2018-10-04
 - Step to check docker build during PR
 - Upgraded docker image version to `17.12.1-ce`
+
+## 1.0.1
+### 2020-04-11
+- Made the plugin compatible with vela
+- Upgraded docker image version to `19.03.6`
