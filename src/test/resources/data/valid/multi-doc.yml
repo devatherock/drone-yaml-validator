@@ -1,0 +1,7 @@
+---
+spring.profiles: prod
+logging.level.root: WARN
+
+---
+spring.profiles: dev
+logging.level.root: debug

@@ -1,3 +1,10 @@
 /.project
 *.iml
 *.jar
+/.gradle/
+/build/
+.classpath
+.DS_Store
+/bin/
+/out/
+.settings
