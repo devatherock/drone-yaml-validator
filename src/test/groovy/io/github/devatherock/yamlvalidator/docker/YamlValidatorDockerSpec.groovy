@@ -1,4 +1,4 @@
-package io.github.devatherock.yamlvalidator
+package io.github.devatherock.yamlvalidator.docker
 
 import groovy.util.logging.Log
 import spock.lang.Shared
@@ -13,7 +13,7 @@ import spock.lang.Unroll
  *
  */
 @Log
-class YamlValidatorSpec extends Specification {
+class YamlValidatorDockerSpec extends Specification {
     @Shared
     @Subject
     def imagesToTest = [
@@ -38,9 +38,9 @@ class YamlValidatorSpec extends Specification {
         output[1].contains(outputText)
 
         when: 'vela yaml validator'
-        executeCommand(['docker', 'run', '--rm', '-v',
-                        "${System.properties['user.dir']}/src/test/resources/data/${folderName}:/work",
-                        '-w=/work', imagesToTest[1]])
+        output = executeCommand(['docker', 'run', '--rm', '-v',
+                                             "${System.properties['user.dir']}/src/test/resources/data/${folderName}:/work",
+                                             '-w=/work', imagesToTest[1]])
 
         then:
         output[0] == expectedExitCode
@@ -56,12 +56,12 @@ class YamlValidatorSpec extends Specification {
         outputText << [
                 "'/work/config.yml' is valid",
                 "'/work/multi-doc.yml' is invalid",
-                "'/work/config.yml' is invalid"
+                "'/work/anchor.yml' is invalid"
         ]
     }
 
     /**
-     * Executes a command and returns the exit code
+     * Executes a command and returns the exit code and output
      *
      * @param command
      * @return exit code and output

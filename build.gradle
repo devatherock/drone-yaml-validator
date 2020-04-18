@@ -10,3 +10,10 @@ dependencies {
     testImplementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.11'
     testImplementation group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.5'
 }
+
+test {
+    testLogging {
+        showStandardStreams = true
+        events 'passed', 'skipped', 'failed'
+    }
+}
