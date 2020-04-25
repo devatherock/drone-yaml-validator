@@ -27,3 +27,7 @@
 - Added unit tests to test the docker image
 - [Issue 2](https://github.com/devatherock/drone-yaml-validator/issues/2): Added `latest` tag
 - [Issue 6](https://github.com/devatherock/drone-yaml-validator/issues/6): Added `docker` badge for vela image
+
+## 1.0.2
+### 2020-04-25
+- Reduced a layer in the image and hence the image size

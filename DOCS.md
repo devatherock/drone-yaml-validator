@@ -13,7 +13,7 @@ pipeline:
     when:
       branch: master
       event: push
-    image: devatherock/drone-yaml-validator:1.0.1
+    image: devatherock/drone-yaml-validator:1.0.2
     debug: true
 ```
 
@@ -25,7 +25,7 @@ steps:
     ruleset:
       branch: master
       event: push
-    image: devatherock/vela-yaml-validator:1.0.1
+    image: devatherock/vela-yaml-validator:1.0.2
     parameters:
       debug: true
 ```
