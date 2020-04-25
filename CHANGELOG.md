@@ -31,3 +31,4 @@
 ## 1.0.2
 ### 2020-04-25
 - Reduced a layer in the image and hence the image size
+- Added separate copy steps again as the image size reduction was only in local
