@@ -1,6 +1,7 @@
 /.project
 *.iml
 *.jar
+!gradle-wrapper.jar
 /.gradle/
 /build/
 .classpath

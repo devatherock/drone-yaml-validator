@@ -5,9 +5,19 @@
 [![Docker Image Layers](https://img.shields.io/microbadger/layers/devatherock/vela-yaml-validator.svg)](https://microbadger.com/images/devatherock/vela-yaml-validator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # drone-yaml-validator
-drone.io/CircleCI/vela plugin to validate yaml files
+CI plugin to validate yaml files
 
 # Usage
+## Docker
+
+```
+docker run --rm \
+  -e PARAMETER_DEBUG=true \
+  -v path/to/yamls:/work \
+  -w=/work \
+  devatherock/vela-yaml-validator:latest
+```
+
 ## CircleCI
 ### On push
 
@@ -16,10 +26,10 @@ version: 2
 jobs:
   validate_yamls:
     docker:
-      - image: devatherock/drone-yaml-validator:1.0.1
+      - image: devatherock/vela-yaml-validator:1.0.2
     working_directory: ~/my-repo
     environment:
-      PLUGIN_DEBUG: false                                      # Flag to enable debug logs. Optional, by default, debug logs are disabled
+      PARAMETER_DEBUG: false                                      # Flag to enable debug logs. Optional, by default, debug logs are disabled
     steps:
       - checkout
       - run: sh /scripts/entry-point.sh
