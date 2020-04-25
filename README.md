@@ -1,9 +1,11 @@
-[![CircleCI](https://circleci.com/gh/devatherock/drone-yaml-validator.svg?style=svg)](https://circleci.com/gh/devaprasadh/drone-yaml-validator)
+[![CircleCI](https://circleci.com/gh/devatherock/drone-yaml-validator.svg?style=svg)](https://circleci.com/gh/devatherock/drone-yaml-validator)
 [![Docker Pulls - Drone](https://img.shields.io/docker/pulls/devatherock/drone-yaml-validator.svg)](https://hub.docker.com/r/devatherock/drone-yaml-validator/)
 [![Docker Pulls - Vela](https://img.shields.io/docker/pulls/devatherock/vela-yaml-validator.svg)](https://hub.docker.com/r/devatherock/vela-yaml-validator/)
-[![Microbadger](https://images.microbadger.com/badges/image/devatherock/drone-yaml-validator.svg)](https://microbadger.com/images/devatherock/drone-yaml-validator)
+[![Docker Image Size](https://img.shields.io/docker/image-size/devatherock/vela-yaml-validator.svg?sort=date)](https://hub.docker.com/r/devatherock/vela-yaml-validator/)
+[![Docker Image Layers](https://img.shields.io/microbadger/layers/devatherock/vela-yaml-validator.svg)](https://microbadger.com/images/devatherock/vela-yaml-validator)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # drone-yaml-validator
-drone.io/CircleCI plugin to validate yaml files
+drone.io/CircleCI/vela plugin to validate yaml files
 
 # Usage
 ## CircleCI
