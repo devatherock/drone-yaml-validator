@@ -1,12 +1,16 @@
 docker_image: &docker_image
   docker:
     - image: docker:19.03.6
+    
+resource_class: &resource_class    
+  resource_class: small    
 
-version: 2
+version: 2.1
 jobs:
   groovy_script_to_jar:
     docker:
       - image: devatherock/vela-groovy-script-to-jar:2.5-alpine
+    <<: *resource_class  
     working_directory: ~/drone-yaml-validator
     environment:
       PARAMETER_SCRIPT_PATH: YamlValidator.groovy
@@ -18,8 +22,10 @@ jobs:
           root: ~/drone-yaml-validator
           paths:
             - docker/YamlValidator.jar
+            
   docker_build_dry_run:
     <<: *docker_image
+    <<: *resource_class
     working_directory: ~/drone-yaml-validator
     steps:
       - checkout
@@ -27,8 +33,10 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: docker build docker
+      
   publish:
     <<: *docker_image
+    <<: *resource_class
     working_directory: ~/drone-yaml-validator
     steps:
       - checkout
@@ -37,16 +45,34 @@ jobs:
           at: ~/drone-yaml-validator
       - run: |
           TAG=1.0.2
-          docker build -t devatherock/drone-yaml-validator:$TAG -t devatherock/vela-yaml-validator:$TAG docker
-          docker build -t devatherock/drone-yaml-validator:latest -t devatherock/vela-yaml-validator:latest docker
+          docker build -t devatherock/drone-yaml-validator:$TAG docker
+          docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
+          docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
+          docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:latest
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push devatherock/drone-yaml-validator:$TAG
           docker push devatherock/drone-yaml-validator:latest
           docker push devatherock/vela-yaml-validator:$TAG
           docker push devatherock/vela-yaml-validator:latest
-
+  
+  notify:
+    docker:
+      - image: devatherock/simple-slack:0.3.0
+    <<: *resource_class  
+    environment:
+      PARAMETER_TEXT: "{{.CircleBuildUrl}} by {{.CircleUsername}}"
+    steps:
+      - run:
+          name: Success notification
+          command: /bin/simpleslack -c "#33ad7f"
+          when: on_success
+      - run:
+          name: Failure notification
+          command: /bin/simpleslack -c "#a1040c"
+          when: on_fail
+          
 workflows:
-  version: 2
+  version: 2.1
   build_publish:
     jobs:
       - groovy_script_to_jar:
@@ -56,6 +82,9 @@ workflows:
       - publish:
           requires:
             - groovy_script_to_jar
+      - notify:
+          requires:
+            - publish
   pr_check:
     jobs:
       - groovy_script_to_jar:
