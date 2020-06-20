@@ -27,6 +27,12 @@ class YamlValidatorDockerSpec extends Specification {
 
     @Unroll
     def 'test drone yaml validator - #folderName'() {
+        given:
+        log.info("Current folder: ${System.properties['user.dir']}")
+        new File(System.properties['user.dir']).eachFile { file ->
+            log.info("File name: ${file}")
+        }
+
         when:
         def output = executeCommand(['docker', 'run', '--rm', '-v',
                                      "${System.properties['user.dir']}/src/test/resources/data/${folderName}:/work",
