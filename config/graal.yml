@@ -4,6 +4,7 @@ native-image:
     additional-args:
       - "--static"
       - "--no-fallback"
+      - "--verbose"
       - "-H:IncludeResourceBundles=net.sourceforge.argparse4j.internal.ArgumentParserImpl"
   agent:
     args:
