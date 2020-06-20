@@ -41,6 +41,8 @@ jobs:
       PLUGIN_CONFIG_FILE: config/graal.yml
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/drone-yaml-validator
       - run: sh /scripts/entry-point.sh
       - persist_to_workspace:
           root: ~/drone-yaml-validator
