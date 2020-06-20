@@ -1,13 +1,10 @@
 native-image:
   build:
-    override-args:
+    additional-args:
       - '--no-server'
-      - '--report-unsupported-elements-at-runtime'
-      - '--allow-incomplete-classpath'
+      - '--no-fallback'
       - "-J-Xmx3072m"
-      - "-Dgroovy.grape.enable=false"
       - "-H:IncludeResourceBundles=net.sourceforge.argparse4j.internal.ArgumentParserImpl"
-      - "-H:ConfigurationFileDirectories=build/native/graal-config/"
   agent:
     args:
       - ['--debug', 'false', '--path', 'src/test/resources/data/valid']
