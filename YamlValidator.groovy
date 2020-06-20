@@ -6,6 +6,7 @@ import java.util.logging.Logger
 import java.util.logging.Level
 import org.yaml.snakeyaml.Yaml
 import net.sourceforge.argparse4j.inf.ArgumentParser
+import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.ArgumentParsers
 
 System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%n')
@@ -18,9 +19,20 @@ parser.addArgument('-d', '--debug')
         .choices(true, false).setDefault(false)
         .type(Boolean)
         .help('Flag to turn on debug logging')
+parser.addArgument('-p', '--path')
+        .setDefault(System.getProperty('user.dir'))
+        .type(String)
+        .help('Path in which to look for yaml files')
 
 final String[] args = getProperty('args') as String[]
-def options = parser.parseArgs(args)
+def options
+try {
+    options = parser.parseArgs(args)
+} catch (ArgumentParserException e) {
+    parser.handleError(e)
+    System.exit(1)
+}
+options = parser.parseArgs(args)
 debug = options.getBoolean('debug')
 
 if(debug) {
@@ -30,7 +42,7 @@ if(debug) {
 }
 
 @Field Yaml yaml = new Yaml()
-validateYamlFiles(new File((String) System.properties['user.dir']))
+validateYamlFiles(new File(options.getString('path')))
 
 /**
  * Validates all yaml files in the provided directory recursively

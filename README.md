@@ -1,5 +1,4 @@
 [![CircleCI](https://circleci.com/gh/devatherock/drone-yaml-validator.svg?style=svg)](https://circleci.com/gh/devatherock/drone-yaml-validator)
-[![Docker Pulls - Drone](https://img.shields.io/docker/pulls/devatherock/drone-yaml-validator.svg)](https://hub.docker.com/r/devatherock/drone-yaml-validator/)
 [![Docker Pulls - Vela](https://img.shields.io/docker/pulls/devatherock/vela-yaml-validator.svg)](https://hub.docker.com/r/devatherock/vela-yaml-validator/)
 [![Docker Image Size](https://img.shields.io/docker/image-size/devatherock/vela-yaml-validator.svg?sort=date)](https://hub.docker.com/r/devatherock/vela-yaml-validator/)
 [![Docker Image Layers](https://img.shields.io/microbadger/layers/devatherock/vela-yaml-validator.svg)](https://microbadger.com/images/devatherock/vela-yaml-validator)
@@ -26,7 +25,7 @@ version: 2
 jobs:
   validate_yamls:
     docker:
-      - image: devatherock/vela-yaml-validator:1.0.2
+      - image: devatherock/vela-yaml-validator:1.1.0
     working_directory: ~/my-repo
     environment:
       PARAMETER_DEBUG: false                                      # Flag to enable debug logs. Optional, by default, debug logs are disabled
@@ -52,5 +51,5 @@ tags:
   only: /^v[0-9\.]+$/       # Regex to match tag pattern
 ```
 
-## drone.io or vela
+## vela
 Please refer [docs](DOCS.md)

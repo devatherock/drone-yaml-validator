@@ -1,0 +1,17 @@
+native-image:
+  build:
+    # Additional arguments to pass to the native image build
+    additional-args:
+      - "--static"
+      - "--no-fallback"
+      - "-H:IncludeResourceBundles=net.sourceforge.argparse4j.internal.ArgumentParserImpl"
+  agent:
+    args:
+      - ['--debug', 'false', '--path', 'src/test/resources/data/valid']
+      - ['--debug', 'false', '--path', 'src/test/resources/data/invalid']
+      - ['--debug', 'false', '--path', 'src/test/resources/data/invalid2']
+      - ['--debug', 'true', '--path', 'src/test/resources/data/valid']
+      - ['--debug', 'true', '--path', 'src/test/resources/data/invalid']
+      - ['--debug', 'true', '--path', 'src/test/resources/data/invalid2']
+      - []
+      - ['--help']
