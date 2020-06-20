@@ -34,7 +34,7 @@ jobs:
   java_to_native:
     docker:
       - image: devatherock/java-to-native:0.1.0
-    <<: *resource_class
+    resource_class: medium
     <<: *work_directory
     environment:
       PLUGIN_JAR_NAME: build/native/libs/YamlValidator.jar

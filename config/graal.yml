@@ -4,7 +4,7 @@ native-image:
       - '--no-server'
       - '--report-unsupported-elements-at-runtime'
       - '--allow-incomplete-classpath'
-      - "-J-Xmx1536m"
+      - "-J-Xmx3072m"
       - "-Dgroovy.grape.enable=false"
       - "-H:IncludeResourceBundles=net.sourceforge.argparse4j.internal.ArgumentParserImpl"
       - "-H:ConfigurationFileDirectories=build/native/graal-config/"
