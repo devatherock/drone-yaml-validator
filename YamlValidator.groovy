@@ -10,7 +10,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.ArgumentParsers
 
 System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%n')
-@Field static final Logger LOGGER = Logger.getLogger('YamlValidator.log')
+@Field Logger logger = Logger.getLogger('YamlValidator.log')
 @Field boolean debug
 
 ArgumentParser parser = ArgumentParsers.newFor('YamlValidator').build()
@@ -51,7 +51,7 @@ validateYamlFiles(new File(options.getString('path')))
  * @return
  */
 def validateYamlFiles(File directory) {
-    LOGGER.fine("Validating files in '${directory}'")
+    logger.fine("Validating files in '${directory}'")
 
     String fileName
     directory.eachFile { file ->
@@ -61,7 +61,7 @@ def validateYamlFiles(File directory) {
         } else if (file.isFile()) {
             fileName = file.absolutePath
             if (fileName.endsWith('.yaml') || fileName.endsWith('.yml')) {
-                LOGGER.fine("Validating '$fileName'.")
+                logger.fine("Validating '$fileName'.")
                 int index = 1
 
                 file.withInputStream { yamlFileInputStream ->
@@ -69,16 +69,16 @@ def validateYamlFiles(File directory) {
 
                     try {
                         yaml.loadAll(yamlFileInputStream).each { document ->
-                            LOGGER.fine("Document $index of '$fileName' is valid")
+                            logger.fine("Document $index of '$fileName' is valid")
                             index++
                         }
                     }
                     catch (Exception e) {
-                        LOGGER.log(Level.SEVERE, "'${fileName}' is invalid", e)
+                        logger.log(Level.SEVERE, "'${fileName}' is invalid", e)
                         System.exit(1)
                     }
                 }
-                LOGGER.info("'$fileName' is valid")
+                logger.info("'$fileName' is valid")
             }
         }
     }
