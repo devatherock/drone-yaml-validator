@@ -30,7 +30,7 @@ jobs:
       - persist_to_workspace:
           root: ~/drone-yaml-validator
           paths:
-            - build/native/libs/YamlValidator.jar
+            - build
   java_to_native:
     docker:
       - image: devatherock/java-to-native:0.1.0
