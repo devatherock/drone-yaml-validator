@@ -37,7 +37,7 @@ jobs:
     <<: *resource_class
     <<: *work_directory
     environment:
-      PLUGIN_JAR_NAME: YamlValidator.jar
+      PLUGIN_JAR_NAME: build/native/libs/YamlValidator.jar
       PLUGIN_CONFIG_FILE: config/graal.yml
     steps:
       - checkout
