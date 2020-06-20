@@ -76,6 +76,9 @@ jobs:
     <<: *work_directory
     steps:
       - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: ~/drone-yaml-validator
       - restore_cache:
           keys:   
             - v1-dependencies-{{ checksum "build.gradle" }}
