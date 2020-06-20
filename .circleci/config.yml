@@ -1,51 +1,63 @@
 docker_image: &docker_image
   docker:
     - image: docker:19.03.6
-    
-resource_class: &resource_class    
-  resource_class: small    
+
+slack_image: &slack_image
+  docker:
+    - image: devatherock/simple-slack:0.4.0
+
+work_directory: &work_directory
+  working_directory: ~/drone-yaml-validator
+
+resource_class: &resource_class
+  resource_class: small
 
 version: 2.1
 jobs:
   groovy_script_to_jar:
     docker:
-      - image: devatherock/vela-groovy-script-to-jar:2.5-alpine
-    <<: *resource_class  
-    working_directory: ~/drone-yaml-validator
+      - image: devatherock/vela-groovy-script-to-jar:0.6.0
+    <<: *resource_class
+    <<: *work_directory
     environment:
       PARAMETER_SCRIPT_PATH: YamlValidator.groovy
-      PARAMETER_OUTPUT_FILE: docker/YamlValidator.jar
+      PARAMETER_STATIC_COMPILE: true
+      VELA: true
+      PARAMETER_OUTPUT_FILE: build/native/libs/YamlValidator.jar
     steps:
       - checkout
       - run: sh /scripts/entry-point.sh
       - persist_to_workspace:
           root: ~/drone-yaml-validator
           paths:
-            - docker/YamlValidator.jar
-            
-  docker_build_dry_run:
-    <<: *docker_image
+            - build/native/libs/YamlValidator.jar
+  java_to_native:
+    docker:
+      - image: devatherock/java-to-native:0.1.0
     <<: *resource_class
-    working_directory: ~/drone-yaml-validator
+    <<: *work_directory
+    environment:
+      PLUGIN_JAR_NAME: YamlValidator.jar
+      PLUGIN_CONFIG_FILE: config/graal.yml
     steps:
       - checkout
-      - setup_remote_docker
-      - attach_workspace:
-          at: ~/drone-yaml-validator
-      - run: docker build docker
-      
+      - run: sh /scripts/entry-point.sh
+      - persist_to_workspace:
+          root: ~/drone-yaml-validator
+          paths:
+            - YamlValidator
   publish:
     <<: *docker_image
     <<: *resource_class
-    working_directory: ~/drone-yaml-validator
+    <<: *work_directory
     steps:
       - checkout
       - setup_remote_docker
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          TAG=1.0.2
-          docker build -t devatherock/drone-yaml-validator:$TAG docker
+          TAG=1.1.0
+          docker build -t devatherock/drone-yaml-validator:$TAG .
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:latest
@@ -54,23 +66,49 @@ jobs:
           docker push devatherock/drone-yaml-validator:latest
           docker push devatherock/vela-yaml-validator:$TAG
           docker push devatherock/vela-yaml-validator:latest
-  
-  notify:
+          
+  test:
     docker:
-      - image: devatherock/simple-slack:0.3.0
-    <<: *resource_class  
+      - image: devatherock/java-with-docker:adoptopenjdk-11
+    <<: *resource_class
+    <<: *work_directory
+    steps:
+      - checkout
+      - restore_cache:
+          keys:   
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            - v1-dependencies-
+      - run: |
+          ./gradlew build --no-daemon
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}            
+
+  notify_success:
+    <<: *slack_image
+    <<: *resource_class
     environment:
-      PARAMETER_TEXT: "{{.CircleBuildUrl}} by {{.CircleUsername}}"
+      TEXT: "Success: {{.CircleBuildUrl}} by {{.CircleUsername}}"
+      COLOR: "#33ad7f"
+      CHANNEL: general
+      TITLE: "Build completed"
+    steps:
+      - run: /bin/simpleslack
+  notify_failure:
+    <<: *slack_image
+    <<: *resource_class
+    environment:
+      TEXT: "Failure: {{.CircleBuildUrl}} by {{.CircleUsername}}"
+      COLOR: "#a1040c"
+      CHANNEL: general
+      TITLE: "Build completed"
     steps:
       - run:
-          name: Success notification
-          command: /bin/simpleslack -c "#33ad7f"
-          when: on_success
-      - run:
           name: Failure notification
-          command: /bin/simpleslack -c "#a1040c"
+          command: /bin/simpleslack
           when: on_fail
-          
+
 workflows:
   version: 2.1
   build_publish:
@@ -79,18 +117,24 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
+      - java_to_native:
           requires:
             - groovy_script_to_jar
-      - notify:
+      - publish:
+          requires:
+            - java_to_native
+      - test:
           requires:
             - publish
+      - notify_success:
+          requires:
+            - test
+      - notify_failure:
+          requires:
+            - test
   pr_check:
     jobs:
       - groovy_script_to_jar:
           filters:
             branches:
               ignore: master
-      - docker_build_dry_run:
-          requires:
-            - groovy_script_to_jar
