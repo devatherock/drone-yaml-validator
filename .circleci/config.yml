@@ -84,7 +84,7 @@ jobs:
             - v1-dependencies-{{ checksum "build.gradle" }}
             - v1-dependencies-
       - run: |
-          ./gradlew build --no-daemon
+          ./gradlew build --info --no-daemon
       - save_cache:
           paths:
             - ~/.gradle
