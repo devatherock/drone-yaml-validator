@@ -2,7 +2,6 @@ native-image:
   build:
     # Additional arguments to pass to the native image build
     additional-args:
-      - "--static"
       - "-J-Xmx1536m"
       - "-H:IncludeResourceBundles=net.sourceforge.argparse4j.internal.ArgumentParserImpl"
   agent:
