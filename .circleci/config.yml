@@ -114,8 +114,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          sh /scripts/entry-point.sh
-          [ $? -eq 1 ]    
+          sh /scripts/entry-point.sh; [ $? -eq 1 ]
       
   test_docker_invalid:
     <<: *yaml_validator_image
@@ -128,8 +127,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          sh /scripts/entry-point.sh
-          [ $? -eq 1 ]
+          sh /scripts/entry-point.sh; [ $? -eq 1 ]
       
   test_docker_invalid_multidoc:
     <<: *yaml_validator_image
@@ -142,8 +140,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          sh /scripts/entry-point.sh
-          [ $? -eq 1 ]   
+          sh /scripts/entry-point.sh; [ $? -eq 1 ]
 
   test_docker_debug:
     <<: *yaml_validator_image
@@ -169,8 +166,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          sh /scripts/entry-point.sh
-          [ $? -eq 1 ]    
+          sh /scripts/entry-point.sh; [ $? -eq 1 ]
       
   test_docker_debug_invalid:
     <<: *yaml_validator_image
@@ -184,8 +180,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          sh /scripts/entry-point.sh
-          [ $? -eq 1 ]
+          sh /scripts/entry-point.sh; [ $? -eq 1 ]
           
   test_docker_debug_invalid_multidoc:
     <<: *yaml_validator_image
@@ -199,8 +194,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          sh /scripts/entry-point.sh
-          [ $? -eq 1 ]            
+          sh /scripts/entry-point.sh; [ $? -eq 1 ]
 
   notify_success:
     <<: *slack_image
