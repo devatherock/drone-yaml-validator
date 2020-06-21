@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.1] - 2020-06-20
+### Added
+- Exposed a parameter to accept path from which to validate yamls
+
 ## [1.1.0] - 2020-06-20
 ### Added
 - [Issue 7](https://github.com/devatherock/drone-yaml-validator/issues/7): Unit tests to test the docker image

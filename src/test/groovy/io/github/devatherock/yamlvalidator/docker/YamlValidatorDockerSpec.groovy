@@ -1,42 +1,47 @@
 package io.github.devatherock.yamlvalidator.docker
 
 import groovy.util.logging.Log
-import spock.lang.Shared
 import spock.lang.Specification
-import spock.lang.Subject
 import spock.lang.Unroll
 
 /**
- * Test class to test the built docker images
+ * Test class to test the built native binary
  *
  * @author z0033zk
  */
 @Log
-class YamlValidatorDockerSpec extends Specification {
-    @Shared
-    @Subject
-    def imagesToTest = [
-            'devatherock/drone-yaml-validator:latest',
-            'devatherock/vela-yaml-validator:latest'
-    ]
-
+class YamlValidatorSpec extends Specification {
     def setupSpec() {
         System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%n')
-        imagesToTest.each { executeCommand("docker pull ${it}") }
+    }
+
+    def 'test yaml validator - entire workspace provided'() {
+        when:
+        def output = executeCommand(['./YamlValidator', '--debug', 'false'])
+
+        then:
+        output[0] == 1
+        output[1].contains('invalid')
+        !output[1].contains('Validating files in')
+        !output[1].contains("Validating '")
+    }
+
+    def 'test yaml validator - entire workspace provided, debug enabled'() {
+        when:
+        def output = executeCommand(['./YamlValidator', '--debug', 'true'])
+
+        then:
+        output[0] == 1
+        output[1].contains('invalid')
+        output[1].contains('Validating files in')
+        output[1].contains("Validating '")
     }
 
     @Unroll
-    def 'test drone yaml validator - #folderName'() {
-        given:
-        log.info("Current folder: ${System.properties['user.dir']}")
-        new File(System.properties['user.dir']).eachFile { file ->
-            log.info("File name: ${file}")
-        }
-
+    def 'test yaml validator - #folderName'() {
         when:
-        def output = executeCommand(['docker', 'run', '--rm', '-v',
-                                     "${System.properties['user.dir']}/src/test/resources/data/${folderName}:/work",
-                                     '-w=/work', imagesToTest[0]])
+        def output = executeCommand(['./YamlValidator', '--debug', 'false', '-p',
+                                     "${System.properties['user.dir']}/src/test/resources/data/${folderName}"])
 
         then:
         output[0] == expectedExitCode
@@ -52,18 +57,17 @@ class YamlValidatorDockerSpec extends Specification {
                 0, 1, 1
         ]
         outputText << [
-                "'/work/config.yml' is valid",
-                "'/work/multi-doc.yml' is invalid",
-                "'/work/anchor.yml' is invalid"
+                "/config.yml' is valid",
+                "/multi-doc.yml' is invalid",
+                "/anchor.yml' is invalid"
         ]
     }
 
     @Unroll
-    def 'test drone yaml validator with debug enabled - #folderName'() {
+    def 'test yaml validator with debug enabled - #folderName'() {
         when:
-        def output = executeCommand(['docker', 'run', '--rm', '-v',
-                                     "${System.properties['user.dir']}/src/test/resources/data/${folderName}:/work",
-                                     '-w=/work', '-e', 'PLUGIN_DEBUG=true', imagesToTest[0]])
+        def output = executeCommand(['./YamlValidator', '--debug', 'true', '-p',
+                                     "${System.properties['user.dir']}/src/test/resources/data/${folderName}"])
 
         then:
         output[0] == expectedExitCode
@@ -79,63 +83,9 @@ class YamlValidatorDockerSpec extends Specification {
                 0, 1, 1
         ]
         outputText << [
-                "'/work/config.yml' is valid",
-                "'/work/multi-doc.yml' is invalid",
-                "'/work/anchor.yml' is invalid"
-        ]
-    }
-
-    @Unroll
-    def 'test vela yaml validator - #folderName'() {
-        when:
-        def output = executeCommand(['docker', 'run', '--rm', '-v',
-                                     "${System.properties['user.dir']}/src/test/resources/data/${folderName}:/work",
-                                     '-w=/work', imagesToTest[1]])
-
-        then:
-        output[0] == expectedExitCode
-        output[1].contains(outputText)
-        !output[1].contains('Validating files in')
-        !output[1].contains("Validating '")
-
-        where:
-        folderName << [
-                'valid', 'invalid', 'invalid2'
-        ]
-        expectedExitCode << [
-                0, 1, 1
-        ]
-        outputText << [
-                "'/work/config.yml' is valid",
-                "'/work/multi-doc.yml' is invalid",
-                "'/work/anchor.yml' is invalid"
-        ]
-    }
-
-    @Unroll
-    def 'test vela yaml validator with debug enabled - #folderName'() {
-        when:
-        def output = executeCommand(['docker', 'run', '--rm', '-v',
-                                     "${System.properties['user.dir']}/src/test/resources/data/${folderName}:/work",
-                                     '-w=/work', '-e', 'PARAMETER_DEBUG=true', imagesToTest[0]])
-
-        then:
-        output[0] == expectedExitCode
-        output[1].contains(outputText)
-        output[1].contains('Validating files in')
-        output[1].contains("Validating '")
-
-        where:
-        folderName << [
-                'valid', 'invalid', 'invalid2'
-        ]
-        expectedExitCode << [
-                0, 1, 1
-        ]
-        outputText << [
-                "'/work/config.yml' is valid",
-                "'/work/multi-doc.yml' is invalid",
-                "'/work/anchor.yml' is invalid"
+                "/config.yml' is valid",
+                "/multi-doc.yml' is invalid",
+                "/anchor.yml' is invalid"
         ]
     }
 

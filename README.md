@@ -14,18 +14,18 @@ docker run --rm \
   -e PARAMETER_DEBUG=true \
   -v path/to/yamls:/work \
   -w=/work \
-  devatherock/vela-yaml-validator:latest
+  devatherock/vela-yaml-validator:1.1.1
 ```
 
 ## CircleCI
 ### On push
 
 ```yaml
-version: 2
+version: 2.1
 jobs:
   validate_yamls:
     docker:
-      - image: devatherock/vela-yaml-validator:1.1.0
+      - image: devatherock/vela-yaml-validator:1.1.1
     working_directory: ~/my-repo
     environment:
       PARAMETER_DEBUG: false                                      # Flag to enable debug logs. Optional, by default, debug logs are disabled
@@ -34,7 +34,7 @@ jobs:
       - run: sh /scripts/entry-point.sh
 
 workflows:
-  version: 2
+  version: 2.1
   yaml_validator:
     jobs:
       - validate_yamls:

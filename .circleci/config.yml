@@ -48,6 +48,27 @@ jobs:
           root: ~/drone-yaml-validator
           paths:
             - YamlValidator
+
+  test:
+    docker:
+      - image: circleci/openjdk:11-jdk
+    <<: *resource_class
+    <<: *work_directory
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/drone-yaml-validator
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            - v1-dependencies-
+      - run: |
+          ./gradlew build --no-daemon
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
   publish:
     <<: *docker_image
     <<: *resource_class
@@ -58,7 +79,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          TAG=1.1.0
+          TAG=1.1.1
           docker build -t devatherock/drone-yaml-validator:$TAG .
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
@@ -68,27 +89,35 @@ jobs:
           docker push devatherock/drone-yaml-validator:latest
           docker push devatherock/vela-yaml-validator:$TAG
           docker push devatherock/vela-yaml-validator:latest
-          
-  test:
+
+  test_docker:
     docker:
-      - image: circleci/openjdk:11-jdk
+      - image: devatherock/vela-yaml-validator:1.1.1
     <<: *resource_class
     <<: *work_directory
+    environment:
+      VELA: true
+      PARAMETER_SEARCH_PATH: "src/test/resources/data/valid"
     steps:
       - checkout
-      - setup_remote_docker
       - attach_workspace:
           at: ~/drone-yaml-validator
-      - restore_cache:
-          keys:   
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            - v1-dependencies-
-      - run: |
-          ./gradlew build --info --no-daemon
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}            
+      - run: sh /scripts/entry-point.sh
+
+  test_docker_debug:
+    docker:
+      - image: devatherock/vela-yaml-validator:1.1.1
+    <<: *resource_class
+    <<: *work_directory
+    environment:
+      VELA: true
+      PARAMETER_DEBUG: true
+      PARAMETER_SEARCH_PATH: "src/test/resources/data/valid"
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/drone-yaml-validator
+      - run: sh /scripts/entry-point.sh
 
   notify_success:
     <<: *slack_image
@@ -125,18 +154,26 @@ workflows:
       - java_to_native:
           requires:
             - groovy_script_to_jar
-      - publish:
+      - test:
           requires:
             - java_to_native
-      - test:
+      - publish:
+          requires:
+            - test
+      - test_docker:
+          requires:
+            - publish
+      - test_docker_debug:
           requires:
             - publish
       - notify_success:
           requires:
-            - test
+            - test_docker_debug
+            - test_docker
       - notify_failure:
           requires:
-            - test
+            - test_docker_debug
+            - test_docker
   pr_check:
     jobs:
       - groovy_script_to_jar:

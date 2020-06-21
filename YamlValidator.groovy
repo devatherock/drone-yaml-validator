@@ -55,12 +55,13 @@ def validateYamlFiles(File directory) {
 
     String fileName
     directory.eachFile { file ->
-        logger.fine("File: ${file.absolutePath}")
+        logger.fine("File or directory: ${file.absolutePath}")
         if (file.isDirectory()) {
             // Recursively evaluate yaml files in each folder
             validateYamlFiles(file)
         } else if (file.isFile()) {
             fileName = file.absolutePath
+            logger.fine("File: ${file.absolutePath}")
             if (fileName.endsWith('.yaml') || fileName.endsWith('.yml')) {
                 logger.fine("Validating '$fileName'.")
                 int index = 1

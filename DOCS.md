@@ -3,6 +3,7 @@
 The following parameters can be set to configure the plugin.
 
 * **debug** - Flag to enable debug logs. Optional, by default, debug logs are disabled
+* **search_path** - If specified, only YAMLs present in this path will be validated
 
 ## Examples
 ### vela
