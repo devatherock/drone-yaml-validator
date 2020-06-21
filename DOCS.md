@@ -14,7 +14,7 @@ steps:
     ruleset:
       branch: master
       event: push
-    image: devatherock/vela-yaml-validator:1.1.0
+    image: devatherock/vela-yaml-validator:1.1.2
     parameters:
       debug: false
 ```

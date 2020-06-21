@@ -1,8 +1,6 @@
 native-image:
   build:
     additional-args:
-      - '--static'
-      - '--no-fallback'
       - "-J-Xmx3072m"
       - "-H:IncludeResourceBundles=net.sourceforge.argparse4j.internal.ArgumentParserImpl"
   agent:

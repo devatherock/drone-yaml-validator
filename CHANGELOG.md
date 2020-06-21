@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.2] - 2020-06-21
+### Changed
+- Stopped using environment variable `VELA`
+
 ## [1.1.1] - 2020-06-20
 ### Added
 - Exposed a parameter to accept path from which to validate yamls
