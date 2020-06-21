@@ -104,43 +104,6 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: sh /scripts/entry-point.sh
-      
-  test_docker_no_path:
-    <<: *yaml_validator_image
-    <<: *resource_class
-    <<: *work_directory
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
-      - run: |
-          sh /scripts/entry-point.sh; [ $? -eq 1 ]
-      
-  test_docker_invalid:
-    <<: *yaml_validator_image
-    <<: *resource_class
-    <<: *work_directory
-    environment:
-      PARAMETER_SEARCH_PATH: "src/test/resources/data/invalid"
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
-      - run: |
-          sh /scripts/entry-point.sh; [ $? -eq 1 ]
-      
-  test_docker_invalid_multidoc:
-    <<: *yaml_validator_image
-    <<: *resource_class
-    <<: *work_directory
-    environment:
-      PARAMETER_SEARCH_PATH: "src/test/resources/data/invalid2"
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
-      - run: |
-          sh /scripts/entry-point.sh; [ $? -eq 1 ]
 
   test_docker_debug:
     <<: *yaml_validator_image
@@ -154,47 +117,6 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: sh /scripts/entry-point.sh
-      
-  test_docker_debug_no_path:
-    <<: *yaml_validator_image
-    <<: *resource_class
-    <<: *work_directory
-    environment:
-      PARAMETER_DEBUG: true
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
-      - run: |
-          sh /scripts/entry-point.sh; [ $? -eq 1 ]
-      
-  test_docker_debug_invalid:
-    <<: *yaml_validator_image
-    <<: *resource_class
-    <<: *work_directory
-    environment:
-      PARAMETER_DEBUG: true
-      PARAMETER_SEARCH_PATH: "src/test/resources/data/invalid"
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
-      - run: |
-          sh /scripts/entry-point.sh; [ $? -eq 1 ]
-          
-  test_docker_debug_invalid_multidoc:
-    <<: *yaml_validator_image
-    <<: *resource_class
-    <<: *work_directory
-    environment:
-      PARAMETER_DEBUG: true
-      PARAMETER_SEARCH_PATH: "src/test/resources/data/invalid2"
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
-      - run: |
-          sh /scripts/entry-point.sh; [ $? -eq 1 ]
 
   notify_success:
     <<: *slack_image
@@ -240,47 +162,17 @@ workflows:
       - test_docker:
           requires:
             - publish
-      - test_docker_no_path:
-          requires:
-            - publish
-      - test_docker_invalid:
-          requires:
-            - publish
-      - test_docker_invalid_multidoc:
-          requires:
-            - publish
       - test_docker_debug:
           requires:
             - publish
-      - test_docker_debug_no_path:
-          requires:
-            - publish
-      - test_docker_debug_invalid:
-          requires:
-            - publish
-      - test_docker_debug_invalid_multidoc:
-          requires:
-            - publish            
       - notify_success:
           requires:
             - test_docker_debug
-            - test_docker_debug_no_path
-            - test_docker_debug_invalid
-            - test_docker_debug_invalid_multidoc
             - test_docker
-            - test_docker_no_path
-            - test_docker_invalid
-            - test_docker_invalid_multidoc
       - notify_failure:
           requires:
             - test_docker_debug
-            - test_docker_debug_no_path
-            - test_docker_debug_invalid
-            - test_docker_debug_invalid_multidoc
             - test_docker
-            - test_docker_no_path
-            - test_docker_invalid
-            - test_docker_invalid_multidoc
   pr_check:
     jobs:
       - groovy_script_to_jar:
