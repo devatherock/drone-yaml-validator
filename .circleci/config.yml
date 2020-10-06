@@ -1,14 +1,23 @@
 docker_image: &docker_image
   docker:
     - image: docker:19.03.6
+      auth:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
 
 slack_image: &slack_image
   docker:
     - image: devatherock/simple-slack:0.4.0
+      auth:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
     
 yaml_validator_image: &yaml_validator_image
   docker:
-    - image: devatherock/vela-yaml-validator:1.1.2  
+    - image: devatherock/vela-yaml-validator:1.1.3
+      auth:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
 
 work_directory: &work_directory
   working_directory: ~/drone-yaml-validator
@@ -21,6 +30,9 @@ jobs:
   groovy_script_to_jar:
     docker:
       - image: devatherock/vela-groovy-script-to-jar:0.6.2
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
     <<: *resource_class
     <<: *work_directory
     environment:
@@ -37,6 +49,9 @@ jobs:
   java_to_native:
     docker:
       - image: devatherock/java-to-native:0.1.2
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
     resource_class: medium
     <<: *work_directory
     environment:
@@ -55,6 +70,9 @@ jobs:
   test:
     docker:
       - image: circleci/openjdk:11-jdk
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
     <<: *resource_class
     <<: *work_directory
     steps:
@@ -82,7 +100,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          TAG=1.1.2
+          TAG=1.1.3
           docker build -t devatherock/drone-yaml-validator:$TAG .
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
@@ -147,29 +165,47 @@ workflows:
   build_publish:
     jobs:
       - groovy_script_to_jar:
+          context:
+            - docker-credentials
           filters:
             branches:
               only: master
       - java_to_native:
+          context:
+            - docker-credentials
           requires:
             - groovy_script_to_jar
       - test:
+          context:
+            - docker-credentials
           requires:
             - java_to_native
       - publish:
+          context:
+            - docker-credentials
           requires:
             - test
       - test_docker:
+          context:
+            - docker-credentials
           requires:
             - publish
       - test_docker_debug:
+          context:
+            - docker-credentials
           requires:
             - publish
       - notify_success:
+          context:
+            - docker-credentials
+            - slack-webhook
           requires:
             - test_docker_debug
             - test_docker
       - notify_failure:
+          context:
+            - docker-credentials
+            - slack-webhook
           requires:
             - test_docker_debug
             - test_docker

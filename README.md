@@ -29,6 +29,7 @@ jobs:
     working_directory: ~/my-repo
     environment:
       PARAMETER_DEBUG: false                                      # Flag to enable debug logs. Optional, by default, debug logs are disabled
+      PARAMETER_CONTINUE_ON_ERROR: true
     steps:
       - checkout
       - run: sh /scripts/entry-point.sh
