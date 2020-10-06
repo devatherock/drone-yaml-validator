@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.3] - 2020-10-05
+### Changed
+- [Issue 9](https://github.com/devatherock/drone-yaml-validator/issues/9) - Parsed all files even after a file fails validation
+- Logged error reason in case of invalid YAML files
+- Enabled auth when pulling from docker registry to avoid docker's rate limiting
+
 ## [1.1.2] - 2020-06-21
 ### Changed
 - Stopped using environment variable `VELA`
