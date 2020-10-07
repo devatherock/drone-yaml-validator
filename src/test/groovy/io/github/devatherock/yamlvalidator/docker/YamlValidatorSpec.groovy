@@ -21,7 +21,7 @@ class YamlValidatorSpec extends Specification {
 
         then:
         output[0] == 1
-        output[1].contains('invalid')
+        output[1].contains('is invalid')
         !output[1].contains('Validating files in')
         !output[1].contains("Validating '")
     }
@@ -32,9 +32,25 @@ class YamlValidatorSpec extends Specification {
 
         then:
         output[0] == 1
-        output[1].contains('invalid')
+        output[1].contains('is invalid')
         output[1].contains('Validating files in')
         output[1].contains("Validating '")
+    }
+
+    @Unroll
+    def 'test yaml validator - continue: #continueOnError'() {
+        when:
+        def output = executeCommand(['./YamlValidator', '-c', continueOnError, '-p',
+                                     "${System.properties['user.dir']}/src/test/resources"])
+
+        then:
+        output[0] == 1
+        output[1].count('is invalid') == invalidCount
+
+        where:
+        continueOnError || invalidCount
+        'true'          || 2
+        'false'         || 1
     }
 
     @Unroll
