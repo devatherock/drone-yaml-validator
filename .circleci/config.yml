@@ -171,6 +171,9 @@ workflows:
             - docker-credentials
           requires:
             - java_to_native
+          pre-steps:
+            - attach_workspace:
+                at: ~/drone-yaml-validator
       - publish:
           context:
             - docker-credentials
