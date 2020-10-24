@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0] - 2020-10-24
+### Added
+- Unit tests
+- Code coverage badge
+
+### Changed
+- Directory structure for unit tests
+
 ## [1.1.3] - 2020-10-05
 ### Changed
 - [Issue 9](https://github.com/devatherock/drone-yaml-validator/issues/9) - Parsed all files even after a file fails validation

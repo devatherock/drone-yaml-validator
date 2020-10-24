@@ -1,4 +1,4 @@
-package io.github.devatherock.yamlvalidator.docker
+package io.github.devatherock.yamlvalidator.bin
 
 import groovy.util.logging.Log
 import spock.lang.Specification
@@ -10,7 +10,7 @@ import spock.lang.Unroll
  * @author z0033zk
  */
 @Log
-class YamlValidatorSpec extends Specification {
+class YamlValidatorBinarySpec extends Specification {
     def setupSpec() {
         System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%n')
     }

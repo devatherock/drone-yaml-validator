@@ -14,7 +14,7 @@ slack_image: &slack_image
     
 yaml_validator_image: &yaml_validator_image
   docker:
-    - image: devatherock/vela-yaml-validator:1.1.3
+    - image: devatherock/vela-yaml-validator:1.2.0
       auth:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
@@ -24,6 +24,16 @@ work_directory: &work_directory
 
 resource_class: &resource_class
   resource_class: small
+
+executors:
+  jdk-executor:
+    docker:
+      - image: cimg/openjdk:11.0
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
+    <<: *resource_class
+    <<: *work_directory
 
 version: 2.1
 jobs:
@@ -36,7 +46,7 @@ jobs:
     <<: *resource_class
     <<: *work_directory
     environment:
-      PARAMETER_SCRIPT_PATH: YamlValidator.groovy
+      PARAMETER_SCRIPT_PATH: src/main/groovy/io/github/devatherock/yamlvalidator/YamlValidator.groovy
       PARAMETER_STATIC_COMPILE: true
       PARAMETER_OUTPUT_FILE: build/native/libs/YamlValidator.jar
     steps:
@@ -67,9 +77,9 @@ jobs:
           paths:
             - YamlValidator
 
-  test:
+  test_binary:
     docker:
-      - image: circleci/openjdk:11-jdk
+      - image: cimg/openjdk:11.0
         auth:
           username: $DOCKER_USERNAME
           password: $DOCKER_PASSWORD
@@ -84,7 +94,7 @@ jobs:
             - v1-dependencies-{{ checksum "build.gradle" }}
             - v1-dependencies-
       - run: |
-          ./gradlew build --no-daemon
+          ./gradlew test --tests '*YamlValidatorBinarySpec*' --no-daemon
       - save_cache:
           paths:
             - ~/.gradle
@@ -100,7 +110,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          TAG=1.1.3
+          TAG=1.2.0
           docker build -t devatherock/drone-yaml-validator:$TAG .
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
@@ -164,18 +174,28 @@ workflows:
   version: 2.1
   build_publish:
     jobs:
+      - gradle/run:
+          executor: jdk-executor
+          context:
+            - docker-credentials
+          filters:
+            branches:
+              only: master
+          command: test --tests '*YamlValidatorSpec*' coveralls
       - groovy_script_to_jar:
           context:
             - docker-credentials
           filters:
             branches:
               only: master
+          requires:
+            - gradle/run
       - java_to_native:
           context:
             - docker-credentials
           requires:
             - groovy_script_to_jar
-      - test:
+      - test_binary:
           context:
             - docker-credentials
           requires:
@@ -184,7 +204,7 @@ workflows:
           context:
             - docker-credentials
           requires:
-            - test
+            - test_binary
       - test_docker:
           context:
             - docker-credentials
@@ -211,7 +231,18 @@ workflows:
             - test_docker
   pr_check:
     jobs:
+      - gradle/run:
+          executor: jdk-executor
+          context:
+            - docker-credentials
+          filters:
+            branches:
+              ignore:
+                - master
+          command: test --tests '*YamlValidatorSpec*'
       - groovy_script_to_jar:
           filters:
             branches:
               ignore: master
+          requires:
+            - gradle/run
