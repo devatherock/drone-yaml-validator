@@ -79,6 +79,23 @@ jobs:
           root: ~/drone-yaml-validator
           paths:
             - YamlValidator
+            
+  test_binary:
+    executor: jdk-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/drone-yaml-validator
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            - v1-dependencies-
+      - run: |
+          ./gradlew test --tests '*YamlValidatorBinarySpec*' --no-daemon
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
 
   publish:
     <<: *docker_image
@@ -176,14 +193,11 @@ workflows:
             - docker-credentials
           requires:
             - groovy_script_to_jar
-      - gradle/run:
-          name: test_binary
-          executor: jdk-executor
+      - test_binary:
           context:
             - docker-credentials
           requires:
             - java_to_native
-          command: test --tests '*YamlValidatorBinarySpec*'
       - publish:
           context:
             - docker-credentials
