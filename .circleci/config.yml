@@ -80,29 +80,6 @@ jobs:
           paths:
             - YamlValidator
 
-  test_binary:
-    docker:
-      - image: cimg/openjdk:11.0
-        auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_PASSWORD
-    <<: *resource_class
-    <<: *work_directory
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            - v1-dependencies-
-      - run: |
-          ./gradlew test --tests '*YamlValidatorBinarySpec*' --no-daemon
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
-
   publish:
     <<: *docker_image
     <<: *resource_class
@@ -178,6 +155,7 @@ workflows:
   build_publish:
     jobs:
       - gradle/run:
+          name: test
           executor: jdk-executor
           context:
             - docker-credentials
@@ -192,17 +170,20 @@ workflows:
             branches:
               only: master
           requires:
-            - gradle/run
+            - test
       - java_to_native:
           context:
             - docker-credentials
           requires:
             - groovy_script_to_jar
-      - test_binary:
+      - gradle/run:
+          name: test_binary
+          executor: jdk-executor
           context:
             - docker-credentials
           requires:
             - java_to_native
+          command: test --tests '*YamlValidatorBinarySpec*'
       - publish:
           context:
             - docker-credentials
@@ -235,6 +216,7 @@ workflows:
   pr_check:
     jobs:
       - gradle/run:
+          name: test
           executor: jdk-executor
           context:
             - docker-credentials
@@ -248,4 +230,4 @@ workflows:
             branches:
               ignore: master
           requires:
-            - gradle/run
+            - test
