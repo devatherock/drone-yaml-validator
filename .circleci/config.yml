@@ -14,7 +14,7 @@ slack_image: &slack_image
     
 yaml_validator_image: &yaml_validator_image
   docker:
-    - image: devatherock/vela-yaml-validator:1.2.0
+    - image: devatherock/vela-yaml-validator:1.1.4
       auth:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
@@ -49,7 +49,7 @@ jobs:
     <<: *resource_class
     <<: *work_directory
     environment:
-      PARAMETER_SCRIPT_PATH: src/main/groovy/io/github/devatherock/yamlvalidator/YamlValidator.groovy
+      PARAMETER_SCRIPT_PATH: YamlValidator.groovy
       PARAMETER_STATIC_COMPILE: true
       PARAMETER_OUTPUT_FILE: build/native/libs/YamlValidator.jar
     steps:
@@ -90,7 +90,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          TAG=1.2.0
+          TAG=1.1.4
           docker build -t devatherock/drone-yaml-validator:$TAG .
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
@@ -162,7 +162,7 @@ workflows:
           filters:
             branches:
               only: master
-          command: test --tests '*YamlValidatorSpec*' coveralls
+          command: test --tests '*YamlValidatorSpec*'
       - groovy_script_to_jar:
           context:
             - docker-credentials

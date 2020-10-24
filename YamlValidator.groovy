@@ -1,5 +1,3 @@
-package io.github.devatherock.yamlvalidator
-
 @Grab(group = 'org.yaml', module = 'snakeyaml', version = '1.25')
 @Grab(group = 'net.sourceforge.argparse4j', module = 'argparse4j', version = '0.8.1')
 

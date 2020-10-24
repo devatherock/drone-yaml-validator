@@ -12,10 +12,10 @@ CI plugin to validate yaml files
 
 ```
 docker run --rm \
-  -e PARAMETER_DEBUG=true \
+  -e PLUGIN_DEBUG=true \
   -v path/to/yamls:/work \
   -w=/work \
-  devatherock/drone-yaml-validator:1.2.0
+  devatherock/drone-yaml-validator:1.1.4
 ```
 
 ## vela/drone/CircleCI
