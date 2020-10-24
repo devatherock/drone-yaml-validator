@@ -1,10 +1,6 @@
 package io.github.devatherock.yamlvalidator.script
 
-import groovy.util.logging.Log
-import spock.lang.Shared
 import spock.lang.Specification
-import spock.lang.Unroll
-import io.github.devatherock.yamlvalidator.YamlValidator
 
 /**
  * Test class to test the groovy script
@@ -29,8 +25,8 @@ class YamlValidatorSpec extends Specification {
         StringBuilder outputLogBuilderTwo = new StringBuilder()
 
         when: 'debug disabled'
-        YamlValidator.main(['--debug', 'false', '-p',
-                            "${System.properties['user.dir']}/src/test/resources/data/valid"] as String[])
+        shell.run(new File('YamlValidator.groovy'), '--debug', 'false', '-p',
+                "${System.properties['user.dir']}/src/test/resources/data/valid")
 
         then:
         (1.._) * testStdout.write(_, _, _) >> { outputLogBuilderTwo.append(new String(it[0])) }
@@ -42,8 +38,8 @@ class YamlValidatorSpec extends Specification {
         !outputLogTwo.contains('is invalid')
 
         when: 'debug enabled'
-        YamlValidator.main(['--debug', 'true', '-p',
-                            "${System.properties['user.dir']}/src/test/resources/data/valid"] as String[])
+        shell.run(new File('YamlValidator.groovy'), '--debug', 'true', '-p',
+                "${System.properties['user.dir']}/src/test/resources/data/valid")
 
         then:
         (1.._) * testStdout.write(_, _, _) >> { outputLogBuilder.append(new String(it[0])) }
