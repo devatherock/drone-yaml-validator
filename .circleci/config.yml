@@ -18,6 +18,9 @@ yaml_validator_image: &yaml_validator_image
       auth:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
+        
+orbs:
+  gradle: circleci/gradle@2.2.0
 
 work_directory: &work_directory
   working_directory: ~/drone-yaml-validator
