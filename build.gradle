@@ -8,8 +8,11 @@ repositories {
     jcenter()
 }
 
+sourceCompatibility = '1.6'
+targetCompatibility = '1.6'
+
 dependencies {
-    implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.11'
+    implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.13'
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.25'
     implementation group: 'net.sourceforge.argparse4j', name: 'argparse4j', version: '0.8.1'
 

@@ -15,6 +15,7 @@ class YamlValidatorSpec extends Specification {
     Handler handler = Mock()
 
     def setup() {
+        System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%6$s%n')
         Logger.getLogger('').addHandler(handler)
     }
 
@@ -24,7 +25,7 @@ class YamlValidatorSpec extends Specification {
         StringBuilder outputLogBuilder = new StringBuilder()
 
         when: 'debug disabled'
-        YamlValidator.main(['--debug', "${debugEnabled}", '-p',
+        new YamlValidator().main(['--debug', "${debugEnabled}", '-p',
                             "${System.properties['user.dir']}/src/test/resources/data/valid"] as String[])
 
         then:

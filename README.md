@@ -16,7 +16,7 @@ docker run --rm \
   -e PLUGIN_DEBUG=true \
   -v path/to/yamls:/work \
   -w=/work \
-  devatherock/drone-yaml-validator:1.2.0
+  devatherock/drone-yaml-validator:latest
 ```
 
 ## CI

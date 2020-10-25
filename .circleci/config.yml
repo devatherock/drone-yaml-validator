@@ -14,7 +14,7 @@ slack_image: &slack_image
     
 yaml_validator_image: &yaml_validator_image
   docker:
-    - image: devatherock/vela-yaml-validator:1.2.0
+    - image: devatherock/vela-yaml-validator:1.3.0
       auth:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
@@ -107,7 +107,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          TAG=1.2.0
+          TAG=1.3.0
           docker build -t devatherock/drone-yaml-validator:$TAG .
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
