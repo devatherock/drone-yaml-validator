@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.5] - 2020-10-24
+### Added
+- Coveralls for code coverage
+- Version badge
+
 ## [1.1.4] - 2020-10-24
 ### Added
 - Unit tests
