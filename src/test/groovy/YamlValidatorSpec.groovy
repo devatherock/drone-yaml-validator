@@ -87,8 +87,6 @@ class YamlValidatorSpec extends Specification {
         outputLog.contains(" is invalid")
         (outputLog.contains("/multi-doc.yml' is invalid") &&
                 outputLog.contains("/anchor.yml' is invalid")) == continueOnError
-        (outputLog.contains("/multi-doc.yaml' is valid") &&
-                outputLog.contains("/config.yml' is valid")) == continueOnError
         outputLog.contains('Validating files in')
         outputLog.contains("Validating '")
         levelInvocations * handler.setLevel(Level.FINE)
