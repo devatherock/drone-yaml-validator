@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.0] - 2020-10-25
+### Changed
+- Rewrote the code a little for better code coverage
+
 ## [1.2.0] - 2020-10-25
 ### Changed
 - Introduced `test` flag for better unit testing, without killing the java process

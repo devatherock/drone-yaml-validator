@@ -10,7 +10,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.ArgumentParsers
 
 System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%6$s%n')
-@Field Logger logger = Logger.getLogger('YamlValidator.log')
+@Field static final Logger logger = Logger.getLogger('YamlValidator.log')
 @Field boolean debug
 @Field boolean shouldContinue
 @Field boolean isTest
@@ -50,12 +50,12 @@ isTest = options.getBoolean('test')
 if (debug) {
     Logger root = Logger.getLogger('')
     root.setLevel(Level.FINE)
-    root.getHandlers().each { it.setLevel(Level.FINE) }
+    for (def handler : root.getHandlers()) {
+        handler.setLevel(Level.FINE)
+    }
 }
 
-@Field Yaml yaml = new Yaml()
 boolean isError = validateYamlFiles(new File(options.getString('path')))
-
 if (isError) {
     exitWithError()
 }
@@ -69,10 +69,11 @@ if (isError) {
 boolean validateYamlFiles(File directory) {
     logger.fine("Validating files in '${directory}'")
 
+    Yaml yaml = new Yaml()
     String fileName
     boolean isError = false
 
-    directory.eachFile { file ->
+    for (def file : directory.listFiles()) {
         logger.fine("File or directory: ${file.absolutePath}")
         // Recursively evaluate yaml files in each folder
         if (file.isDirectory()) {
@@ -86,10 +87,8 @@ boolean validateYamlFiles(File directory) {
                 int index = 1
 
                 file.withInputStream { yamlFileInputStream ->
-                    index = 1
-
                     try {
-                        yaml.loadAll(yamlFileInputStream).each { document ->
+                        for (def document : yaml.loadAll(yamlFileInputStream)) {
                             logger.fine("Document $index of '$fileName' is valid")
                             index++
                         }
