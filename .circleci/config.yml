@@ -91,7 +91,7 @@ jobs:
             - v1-dependencies-{{ checksum "build.gradle" }}
             - v1-dependencies-
       - run: |
-          ./gradlew test --tests '*YamlValidatorBinarySpec*' --no-daemon
+          ./gradlew test --tests '*YamlValidatorBinarySpec*' -x jacocoTestCoverageVerification --no-daemon
       - save_cache:
           paths:
             - ~/.gradle
