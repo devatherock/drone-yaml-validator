@@ -1,5 +1,3 @@
-package io.github.devatherock.yamlvalidator.script
-
 import spock.lang.Specification
 
 /**
@@ -8,7 +6,6 @@ import spock.lang.Specification
  * @author z0033zk
  */
 class YamlValidatorSpec extends Specification {
-    GroovyShell shell = new GroovyShell(new Binding())
 
     def 'test yaml validator'() {
         setup:
@@ -25,8 +22,8 @@ class YamlValidatorSpec extends Specification {
         StringBuilder outputLogBuilderTwo = new StringBuilder()
 
         when: 'debug disabled'
-        shell.run(new File('YamlValidator.groovy'), '--debug', 'false', '-p',
-                "${System.properties['user.dir']}/src/test/resources/data/valid")
+        YamlValidator.main(['--debug', 'false', '-p',
+                            "${System.properties['user.dir']}/src/test/resources/data/valid"] as String[])
 
         then:
         (1.._) * testStdout.write(_, _, _) >> { outputLogBuilderTwo.append(new String(it[0])) }
@@ -38,8 +35,8 @@ class YamlValidatorSpec extends Specification {
         !outputLogTwo.contains('is invalid')
 
         when: 'debug enabled'
-        shell.run(new File('YamlValidator.groovy'), '--debug', 'true', '-p',
-                "${System.properties['user.dir']}/src/test/resources/data/valid")
+        YamlValidator.main(['--debug', 'true', '-p',
+                   "${System.properties['user.dir']}/src/test/resources/data/valid"] as String[])
 
         then:
         (1.._) * testStdout.write(_, _, _) >> { outputLogBuilder.append(new String(it[0])) }
