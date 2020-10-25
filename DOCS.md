@@ -16,8 +16,19 @@ steps:
     ruleset:
       branch: master
       event: push
-    image: devatherock/vela-yaml-validator:1.1.5
+    image: devatherock/vela-yaml-validator:1.2.0
     parameters:
+      debug: false
+      continue_on_error: false
+```
+
+### drone
+
+```yaml
+steps:
+  - name: yaml_validator
+    image: devatherock/drone-yaml-validator:1.2.0
+    settings:
       debug: false
       continue_on_error: false
 ```
@@ -29,7 +40,7 @@ version: 2.1
 jobs:
   validate_yamls:
     docker:
-      - image: devatherock/vela-yaml-validator:1.1.5
+      - image: devatherock/vela-yaml-validator:1.2.0
     working_directory: ~/my-repo
     environment:
       PARAMETER_DEBUG: false

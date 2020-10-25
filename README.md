@@ -16,8 +16,8 @@ docker run --rm \
   -e PLUGIN_DEBUG=true \
   -v path/to/yamls:/work \
   -w=/work \
-  devatherock/drone-yaml-validator:1.1.5
+  devatherock/drone-yaml-validator:1.2.0
 ```
 
-## vela/drone/CircleCI
+## CI
 Please refer [docs](DOCS.md)

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.0] - 2020-10-25
+### Changed
+- Introduced `test` flag for better unit testing, without killing the java process
+
 ## [1.1.5] - 2020-10-24
 ### Added
 - Coveralls for code coverage

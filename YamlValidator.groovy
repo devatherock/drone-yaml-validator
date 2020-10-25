@@ -13,6 +13,7 @@ System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%6$s%n')
 @Field Logger logger = Logger.getLogger('YamlValidator.log')
 @Field boolean debug
 @Field boolean shouldContinue
+@Field boolean isTest
 
 ArgumentParser parser = ArgumentParsers.newFor('YamlValidator').build()
         .defaultHelp(true)
@@ -24,6 +25,10 @@ parser.addArgument('-c', '--continue')
         .choices(true, false).setDefault(true)
         .type(Boolean)
         .help('Flag to indicate if processing should be continued on error')
+parser.addArgument('-t', '--test')
+        .choices(true, false).setDefault(false)
+        .type(Boolean)
+        .help('Flag to be used for unit testing')
 parser.addArgument('-p', '--path')
         .setDefault(System.getProperty('user.dir'))
         .type(String)
@@ -35,11 +40,12 @@ try {
     options = parser.parseArgs(args)
 } catch (ArgumentParserException e) {
     parser.handleError(e)
-    System.exit(1)
+    exitWithError()
 }
 options = parser.parseArgs(args)
 debug = options.getBoolean('debug')
 shouldContinue = options.getBoolean('continue')
+isTest = options.getBoolean('test')
 
 if (debug) {
     Logger root = Logger.getLogger('')
@@ -51,7 +57,7 @@ if (debug) {
 boolean isError = validateYamlFiles(new File(options.getString('path')))
 
 if (isError) {
-    System.exit(1)
+    exitWithError()
 }
 
 /**
@@ -95,7 +101,7 @@ boolean validateYamlFiles(File directory) {
                         if (shouldContinue) {
                             isError = true
                         } else {
-                            System.exit(1)
+                            exitWithError()
                         }
                     }
                 }
@@ -104,4 +110,15 @@ boolean validateYamlFiles(File directory) {
     }
 
     return isError
+}
+
+/**
+ * Exits the script because invalid yaml files have been encountered
+ */
+void exitWithError() {
+    if (isTest) {
+        throw new RuntimeException('Invalid yaml files found')
+    } else {
+        System.exit(1)
+    }
 }
