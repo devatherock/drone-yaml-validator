@@ -91,6 +91,7 @@ jobs:
             - v1-dependencies-{{ checksum "build.gradle" }}
             - v1-dependencies-
       - run: |
+          git clone --depth=1 --branch=master https://github.com/devatherock/gradle-includes.git ../gradle-includes
           ./gradlew test --tests '*YamlValidatorBinarySpec*' -x jacocoTestCoverageVerification --no-daemon
       - save_cache:
           paths:
@@ -107,7 +108,7 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          TAG=1.3.0
+          TAG=1.3.1
           docker build -t devatherock/drone-yaml-validator:$TAG .
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
@@ -180,6 +181,10 @@ workflows:
             branches:
               only: master
           command: test --tests '*YamlValidatorSpec*' coveralls
+          pre-steps:
+            - run:
+                command: |
+                  git clone --depth=1 --branch=master https://github.com/devatherock/gradle-includes.git ../gradle-includes
       - groovy_script_to_jar:
           context:
             - docker-credentials
@@ -239,6 +244,10 @@ workflows:
               ignore:
                 - master
           command: test --tests '*YamlValidatorSpec*'
+          pre-steps:
+            - run:
+                command: |
+                  git clone --depth=1 --branch=master https://github.com/devatherock/gradle-includes.git ../gradle-includes
       - groovy_script_to_jar:
           filters:
             branches:

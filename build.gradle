@@ -34,4 +34,20 @@ compileGroovy {
     groovyOptions.configurationScript = file('gradle/config.groovy')
 }
 
-apply from: 'checks.gradle'
+ext.jacoco = [
+    coverageThresholds: [
+        'YamlValidator': [
+            'BRANCH': 0.70,
+            'COMPLEXITY': 0.70,
+            'INSTRUCTION': 0.92,
+            'LINE': 0.88
+        ],
+        'YamlValidator._validateYamlFiles_closure1': [
+            'BRANCH': 0.75,
+            'COMPLEXITY': 0.75,
+            'INSTRUCTION': 0.93,
+            'LINE': 0.83
+        ]
+    ]
+]
+apply from: '../gradle-includes/checks.gradle'
