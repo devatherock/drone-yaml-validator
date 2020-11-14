@@ -14,7 +14,7 @@ slack_image: &slack_image
     
 yaml_validator_image: &yaml_validator_image
   docker:
-    - image: devatherock/vela-yaml-validator:${CIRCLE_SHA1:0:8}
+    - image: devatherock/vela-yaml-validator:latest
       auth:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
@@ -111,9 +111,13 @@ jobs:
           TAG=${CIRCLE_SHA1:0:8}
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker build -t devatherock/drone-yaml-validator:$TAG .
+          docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
+          docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:latest
           docker push devatherock/drone-yaml-validator:$TAG
+          docker push devatherock/drone-yaml-validator:latest
           docker push devatherock/vela-yaml-validator:$TAG
+          docker push devatherock/vela-yaml-validator:latest
 
   test_docker:
     <<: *yaml_validator_image
@@ -155,13 +159,9 @@ jobs:
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker pull devatherock/drone-yaml-validator:$DEV_TAG
           docker tag devatherock/drone-yaml-validator:$DEV_TAG devatherock/drone-yaml-validator:$TAG
-          docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
-          docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:latest
           docker push devatherock/drone-yaml-validator:$TAG
-          docker push devatherock/drone-yaml-validator:latest
           docker push devatherock/vela-yaml-validator:$TAG
-          docker push devatherock/vela-yaml-validator:latest    
 
   notify_success:
     <<: *slack_image
