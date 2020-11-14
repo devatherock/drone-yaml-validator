@@ -14,7 +14,7 @@ slack_image: &slack_image
     
 yaml_validator_image: &yaml_validator_image
   docker:
-    - image: devatherock/vela-yaml-validator:1.4.0
+    - image: devatherock/vela-yaml-validator:${CIRCLE_SHA1:0:8}
       auth:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
@@ -98,7 +98,7 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-  publish:
+  publish_dev:
     <<: *docker_image
     <<: *resource_class
     <<: *work_directory
@@ -108,16 +108,12 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: |
-          TAG=1.4.0
-          docker build -t devatherock/drone-yaml-validator:$TAG .
-          docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
-          docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
-          docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:latest
+          TAG=${CIRCLE_SHA1:0:8}
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker build -t devatherock/drone-yaml-validator:$TAG .
+          docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
           docker push devatherock/drone-yaml-validator:$TAG
-          docker push devatherock/drone-yaml-validator:latest
           docker push devatherock/vela-yaml-validator:$TAG
-          docker push devatherock/vela-yaml-validator:latest
 
   test_docker:
     <<: *yaml_validator_image
@@ -143,6 +139,29 @@ jobs:
       - attach_workspace:
           at: ~/drone-yaml-validator
       - run: sh /scripts/entry-point.sh
+      
+  publish_release:
+    <<: *docker_image
+    <<: *resource_class
+    <<: *work_directory
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: ~/drone-yaml-validator
+      - run: |
+          TAG=${CIRCLE_TAG#v}
+          DEV_TAG=${CIRCLE_SHA1:0:8}
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker pull devatherock/drone-yaml-validator:$DEV_TAG
+          docker tag devatherock/drone-yaml-validator:$DEV_TAG devatherock/drone-yaml-validator:$TAG
+          docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
+          docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:$TAG
+          docker tag devatherock/drone-yaml-validator:$TAG devatherock/vela-yaml-validator:latest
+          docker push devatherock/drone-yaml-validator:$TAG
+          docker push devatherock/drone-yaml-validator:latest
+          docker push devatherock/vela-yaml-validator:$TAG
+          docker push devatherock/vela-yaml-validator:latest    
 
   notify_success:
     <<: *slack_image
@@ -203,7 +222,7 @@ workflows:
             - docker-credentials
           requires:
             - java_to_native
-      - publish:
+      - publish_dev:
           context:
             - docker-credentials
           requires:
@@ -212,12 +231,12 @@ workflows:
           context:
             - docker-credentials
           requires:
-            - publish
+            - publish_dev
       - test_docker_debug:
           context:
             - docker-credentials
           requires:
-            - publish
+            - publish_dev
       - notify_success:
           context:
             - docker-credentials
@@ -232,6 +251,28 @@ workflows:
           requires:
             - test_docker_debug
             - test_docker
+  release:
+    jobs:
+      - publish_release:
+          context:
+            - docker-credentials
+          filters:
+            branches:
+              only: non-existent-branch
+            tags:
+              only: /^v[0-9\.]+$/
+      - notify_success:
+          context:
+            - docker-credentials
+            - slack-webhook
+          requires:
+            - publish_release
+      - notify_failure:
+          context:
+            - docker-credentials
+            - slack-webhook
+          requires:
+            - publish_release
   pr_check:
     jobs:
       - gradle/run:

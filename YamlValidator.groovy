@@ -5,6 +5,7 @@ import groovy.transform.Field
 import java.util.logging.Logger
 import java.util.logging.Level
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.error.YAMLException
 import net.sourceforge.argparse4j.inf.ArgumentParser
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.ArgumentParsers
@@ -34,15 +35,15 @@ parser.addArgument('-p', '--path')
         .type(String)
         .help('Path in which to look for yaml files')
 
-final String[] args = getProperty('args') as String[]
+final String[] ARGS = getProperty('args') as String[]
 def options
 try {
-    options = parser.parseArgs(args)
+    options = parser.parseArgs(ARGS)
 } catch (ArgumentParserException e) {
     parser.handleError(e)
     exitWithError()
 }
-options = parser.parseArgs(args)
+options = parser.parseArgs(ARGS)
 debug = options.getBoolean('debug')
 shouldContinue = options.getBoolean('continue')
 isTest = options.getBoolean('test')
@@ -94,7 +95,7 @@ boolean validateYamlFiles(File directory) {
                         }
                         LOGGER.info("'$fileName' is valid")
                     }
-                    catch (Exception e) {
+                    catch (YAMLException e) {
                         LOGGER.log(Level.SEVERE, "'${fileName}' is invalid. Error: ${e.message}")
 
                         if (shouldContinue) {

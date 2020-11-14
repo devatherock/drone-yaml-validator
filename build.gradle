@@ -37,8 +37,8 @@ compileGroovy {
 ext.jacoco = [
     coverageThresholds: [
         'YamlValidator': [
-            'BRANCH': 0.70,
-            'COMPLEXITY': 0.70,
+            'BRANCH': 0.67,
+            'COMPLEXITY': 0.66,
             'INSTRUCTION': 0.92,
             'LINE': 0.88
         ],
