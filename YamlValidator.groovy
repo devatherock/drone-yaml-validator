@@ -10,7 +10,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.ArgumentParsers
 
 System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%6$s%n')
-@Field static final Logger logger = Logger.getLogger('YamlValidator.log')
+@Field static final Logger LOGGER = Logger.getLogger('YamlValidator.log')
 @Field boolean debug
 @Field boolean shouldContinue
 @Field boolean isTest
@@ -50,7 +50,7 @@ isTest = options.getBoolean('test')
 if (debug) {
     Logger root = Logger.getLogger('')
     root.setLevel(Level.FINE)
-    for (def handler : root.getHandlers()) {
+    for (def handler : root.handlers) {
         handler.setLevel(Level.FINE)
     }
 }
@@ -67,35 +67,35 @@ if (isError) {
  * @return
  */
 boolean validateYamlFiles(File directory) {
-    logger.fine("Validating files in '${directory}'")
+    LOGGER.fine("Validating files in '${directory}'")
 
     Yaml yaml = new Yaml()
     String fileName
     boolean isError = false
 
     for (def file : directory.listFiles()) {
-        logger.fine("File or directory: ${file.absolutePath}")
+        LOGGER.fine("File or directory: ${file.absolutePath}")
         // Recursively evaluate yaml files in each folder
-        if (file.isDirectory()) {
+        if (file.directory) {
             // To retain overall error status. isError has to be on the right hand side
             isError = validateYamlFiles(file) || isError
-        } else if (file.isFile()) {
+        } else if (file.file) {
             fileName = file.absolutePath
-            logger.fine("File: ${file.absolutePath}")
+            LOGGER.fine("File: ${file.absolutePath}")
             if (fileName.endsWith('.yaml') || fileName.endsWith('.yml')) {
-                logger.fine("Validating '$fileName'.")
+                LOGGER.fine("Validating '$fileName'.")
                 int index = 1
 
                 file.withInputStream { yamlFileInputStream ->
                     try {
                         for (def document : yaml.loadAll(yamlFileInputStream)) {
-                            logger.fine("Document $index of '$fileName' is valid")
+                            LOGGER.fine("Document $index of '$fileName' is valid")
                             index++
                         }
-                        logger.info("'$fileName' is valid")
+                        LOGGER.info("'$fileName' is valid")
                     }
                     catch (Exception e) {
-                        logger.log(Level.SEVERE, "'${fileName}' is invalid. Error: ${e.getMessage()}")
+                        LOGGER.log(Level.SEVERE, "'${fileName}' is invalid. Error: ${e.message}")
 
                         if (shouldContinue) {
                             isError = true
