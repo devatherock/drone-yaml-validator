@@ -1,5 +1,5 @@
 [![CircleCI](https://circleci.com/gh/devatherock/drone-yaml-validator.svg?style=svg)](https://circleci.com/gh/devatherock/drone-yaml-validator)
-[![Version](https://img.shields.io/docker/v/devatherock/vela-yaml-validator?sort=date)](https://hub.docker.com/r/devatherock/vela-yaml-validator/)
+[![Version](https://img.shields.io/docker/v/devatherock/vela-yaml-validator?sort=semver)](https://hub.docker.com/r/devatherock/vela-yaml-validator/)
 [![Coverage Status](https://coveralls.io/repos/github/devatherock/drone-yaml-validator/badge.svg?branch=master)](https://coveralls.io/github/devatherock/drone-yaml-validator?branch=master)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/eee25e47d4104a20894d2a0f8f35d2fd)](https://www.codacy.com/gh/devatherock/drone-yaml-validator/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=devatherock/drone-yaml-validator&amp;utm_campaign=Badge_Grade)
 [![Docker Pulls - Drone](https://img.shields.io/docker/pulls/devatherock/drone-yaml-validator.svg)](https://hub.docker.com/r/devatherock/drone-yaml-validator/)
