@@ -1,3 +1,5 @@
+#!/bin/sh
+
 ENABLE_DEBUG=false
 if [ "$PLUGIN_DEBUG" = "true" ] || [ "$PARAMETER_DEBUG" = "true" ]; then
   ENABLE_DEBUG=true
@@ -19,4 +21,4 @@ if [ ! -z "$SEARCH_PATH" ]; then
    ALL_OPTS="$ALL_OPTS -p $SEARCH_PATH"
 fi
 
-/scripts/yamlvalidator $ALL_OPTS
+/scripts/yamlvalidator "$ALL_OPTS"
