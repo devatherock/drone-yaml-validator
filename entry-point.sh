@@ -21,4 +21,4 @@ if [ ! -z "$SEARCH_PATH" ]; then
    ALL_OPTS="$ALL_OPTS -p $SEARCH_PATH"
 fi
 
-/scripts/yamlvalidator "$ALL_OPTS"
+/scripts/yamlvalidator $ALL_OPTS

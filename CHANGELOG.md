@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Changed
+-   Fixed bug introduced when fixing codacy violations
+
 ## [1.4.0] - 2020-11-14
 ### Changed
 -   Fixed `Codacy` violations
