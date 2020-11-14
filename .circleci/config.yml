@@ -256,6 +256,11 @@ workflows:
       - publish_release:
           context:
             - docker-credentials
+          filters:
+            branches:
+              only: non-existent-branch
+            tags:
+              only: /^v[0-9\.]+$/
       - notify_success:
           context:
             - docker-credentials
