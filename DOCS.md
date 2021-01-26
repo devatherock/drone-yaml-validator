@@ -9,6 +9,9 @@ defaults to true
 
 *   **search_path** - If specified, only YAMLs present in this path will be validated
 
+*   **allow_duplicate_keys** - Flag to indicate if YAML files with duplicate keys should be considered valid. Optional, 
+    defaults to false
+
 ## Examples
 ### vela
 
@@ -22,6 +25,7 @@ steps:
     parameters:
       debug: false
       continue_on_error: false
+      allow_duplicate_keys: true
 ```
 
 ### drone
@@ -33,6 +37,7 @@ steps:
     settings:
       debug: false
       continue_on_error: false
+      allow_duplicate_keys: true
 ```
 
 ### CircleCI
@@ -47,6 +52,7 @@ jobs:
     environment:
       PARAMETER_DEBUG: false
       PARAMETER_CONTINUE_ON_ERROR: false
+      PARAMETER_ALLOW_DUPLICATE_KEYS: true
     steps:
       - checkout
       - run: sh /scripts/entry-point.sh

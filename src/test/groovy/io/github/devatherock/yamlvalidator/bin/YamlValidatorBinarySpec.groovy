@@ -11,11 +11,11 @@ import spock.lang.Unroll
  */
 @Log
 class YamlValidatorBinarySpec extends Specification {
-    def setupSpec() {
+    void setupSpec() {
         System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%n')
     }
 
-    def 'test yaml validator - entire workspace provided'() {
+    void 'test yaml validator - entire workspace provided'() {
         when:
         def output = executeCommand(['./YamlValidator', '--debug', 'false'])
 
@@ -26,7 +26,7 @@ class YamlValidatorBinarySpec extends Specification {
         !output[1].contains("Validating '")
     }
 
-    def 'test yaml validator - entire workspace provided, debug enabled'() {
+    void 'test yaml validator - entire workspace provided, debug enabled'() {
         when:
         def output = executeCommand(['./YamlValidator', '--debug', 'true'])
 
@@ -38,7 +38,7 @@ class YamlValidatorBinarySpec extends Specification {
     }
 
     @Unroll
-    def 'test yaml validator - continue: #continueOnError'() {
+    void 'test yaml validator - continue: #continueOnError'() {
         when:
         def output = executeCommand(['./YamlValidator', '-c', continueOnError, '-p',
                                      "${System.properties['user.dir']}/src/test/resources"])
@@ -54,7 +54,7 @@ class YamlValidatorBinarySpec extends Specification {
     }
 
     @Unroll
-    def 'test yaml validator - #folderName'() {
+    void 'test yaml validator - #folderName'() {
         when:
         def output = executeCommand(['./YamlValidator', '--debug', 'false', '-p',
                                      "${System.properties['user.dir']}/src/test/resources/data/${folderName}"])
@@ -80,7 +80,30 @@ class YamlValidatorBinarySpec extends Specification {
     }
 
     @Unroll
-    def 'test yaml validator with debug enabled - #folderName'() {
+    void 'test yaml validator - duplicate keys allowed: #allowDuplicateKeys'() {
+        when:
+        def output = executeCommand(['./YamlValidator', '-ad', "${allowDuplicateKeys}", '-p',
+                                     "${System.properties['user.dir']}/src/test/resources/data/duplicate"])
+
+        then:
+        output[0] == expectedExitCode
+        output[1].contains(outputText)
+
+        where:
+        allowDuplicateKeys << [
+                true, false
+        ]
+        expectedExitCode << [
+                0, 1
+        ]
+        outputText << [
+                "/duplicate-keys.yml' is valid",
+                "/duplicate-keys.yml' is invalid"
+        ]
+    }
+
+    @Unroll
+    void 'test yaml validator with debug enabled - #folderName'() {
         when:
         def output = executeCommand(['./YamlValidator', '--debug', 'true', '-p',
                                      "${System.properties['user.dir']}/src/test/resources/data/${folderName}"])

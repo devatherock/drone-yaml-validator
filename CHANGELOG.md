@@ -1,6 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- [#28](https://github.com/devatherock/drone-yaml-validator/issues/28): Flag to treat YAML files with duplicate keys as valid.
+Defaults to treating such files as invalid
+
+## [1.4.1] - 2020-11-14
 ### Changed
 -   Fixed bug introduced when fixing codacy violations
 

@@ -6,6 +6,7 @@ import java.util.logging.Logger
 import java.util.logging.Level
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.error.YAMLException
+import org.yaml.snakeyaml.LoaderOptions
 import net.sourceforge.argparse4j.inf.ArgumentParser
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.ArgumentParsers
@@ -15,6 +16,7 @@ System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%6$s%n')
 @Field boolean debug
 @Field boolean shouldContinue
 @Field boolean isTest
+@Field boolean allowDuplicateKeys
 
 ArgumentParser parser = ArgumentParsers.newFor('YamlValidator').build()
         .defaultHelp(true)
@@ -34,6 +36,10 @@ parser.addArgument('-p', '--path')
         .setDefault(System.getProperty('user.dir'))
         .type(String)
         .help('Path in which to look for yaml files')
+parser.addArgument('-ad', '--allow-duplicate-keys')
+        .choices(true, false).setDefault(false)
+        .type(Boolean)
+        .help('Flag to indicate if YAML files with duplicate keys should be considered valid')
 
 final String[] ARGS = getProperty('args') as String[]
 def options
@@ -47,6 +53,7 @@ options = parser.parseArgs(ARGS)
 debug = options.getBoolean('debug')
 shouldContinue = options.getBoolean('continue')
 isTest = options.getBoolean('test')
+allowDuplicateKeys = options.getBoolean('allow_duplicate_keys')
 
 if (debug) {
     Logger root = Logger.getLogger('')
@@ -70,7 +77,10 @@ if (isError) {
 boolean validateYamlFiles(File directory) {
     LOGGER.fine("Validating files in '${directory}'")
 
-    Yaml yaml = new Yaml()
+    LoaderOptions loaderOptions = new LoaderOptions(
+            allowDuplicateKeys: allowDuplicateKeys
+    )
+    Yaml yaml = new Yaml(loaderOptions)
     String fileName
     boolean isError = false
 

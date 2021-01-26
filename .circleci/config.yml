@@ -1,10 +1,3 @@
-docker_image: &docker_image
-  docker:
-    - image: docker:19.03.6
-      auth:
-        username: $DOCKER_USERNAME
-        password: $DOCKER_PASSWORD
-
 slack_image: &slack_image
   docker:
     - image: devatherock/simple-slack:0.4.0
@@ -99,9 +92,7 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
   publish_dev:
-    <<: *docker_image
-    <<: *resource_class
-    <<: *work_directory
+    executor: jdk-executor
     steps:
       - checkout
       - setup_remote_docker
@@ -131,6 +122,19 @@ jobs:
           at: ~/drone-yaml-validator
       - run: sh /scripts/entry-point.sh
 
+  test_docker_duplicate_keys:
+    <<: *yaml_validator_image
+    <<: *resource_class
+    <<: *work_directory
+    environment:
+      PARAMETER_SEARCH_PATH: "src/test/resources/data/duplicate"
+      PARAMETER_ALLOW_DUPLICATE_KEYS: true
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/drone-yaml-validator
+      - run: sh /scripts/entry-point.sh
+
   test_docker_debug:
     <<: *yaml_validator_image
     <<: *resource_class
@@ -145,9 +149,7 @@ jobs:
       - run: sh /scripts/entry-point.sh
       
   publish_release:
-    <<: *docker_image
-    <<: *resource_class
-    <<: *work_directory
+    executor: jdk-executor
     steps:
       - checkout
       - setup_remote_docker
@@ -173,19 +175,6 @@ jobs:
       TITLE: "Build completed"
     steps:
       - run: /bin/simpleslack
-  notify_failure:
-    <<: *slack_image
-    <<: *resource_class
-    environment:
-      TEXT: "Failure: {{.CircleBuildUrl}} by {{.CircleUsername}}"
-      COLOR: "#a1040c"
-      CHANNEL: general
-      TITLE: "Build completed"
-    steps:
-      - run:
-          name: Failure notification
-          command: /bin/simpleslack
-          when: on_fail
 
 workflows:
   version: 2.1
@@ -232,6 +221,11 @@ workflows:
             - docker-credentials
           requires:
             - publish_dev
+      - test_docker_duplicate_keys:
+          context:
+            - docker-credentials
+          requires:
+            - publish_dev
       - test_docker_debug:
           context:
             - docker-credentials
@@ -242,15 +236,9 @@ workflows:
             - docker-credentials
             - slack-webhook
           requires:
-            - test_docker_debug
             - test_docker
-      - notify_failure:
-          context:
-            - docker-credentials
-            - slack-webhook
-          requires:
+            - test_docker_duplicate_keys
             - test_docker_debug
-            - test_docker
   release:
     jobs:
       - publish_release:
@@ -262,12 +250,6 @@ workflows:
             tags:
               only: /^v[0-9\.]+$/
       - notify_success:
-          context:
-            - docker-credentials
-            - slack-webhook
-          requires:
-            - publish_release
-      - notify_failure:
           context:
             - docker-credentials
             - slack-webhook
