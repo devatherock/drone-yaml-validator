@@ -80,7 +80,7 @@ class YamlValidatorBinarySpec extends Specification {
     }
 
     @Unroll
-    void 'test yaml validator - duplicate keys allowed: #allowDuplicateKeys'() {
+    void 'test yaml validator - allowDuplicateKeys: #allowDuplicateKeys'() {
         when:
         def output = executeCommand(['./YamlValidator', '-ad', "${allowDuplicateKeys}", '-p',
                                      "${System.properties['user.dir']}/src/test/resources/data/duplicate"])
