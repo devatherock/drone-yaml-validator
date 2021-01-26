@@ -22,3 +22,9 @@ docker run --rm \
 
 ### CI
 Please refer [docs](DOCS.md)
+
+## Tests
+To test the latest plugin images, run the below command
+```shell
+./gradlew test --tests '*YamlValidatorDockerSpec*' -x jacocoTestCoverageVerification
+```

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 ### Added
+- Functional tests that can be manually run to verify the dev images before releasing
+
+## [1.5.0] - 2021-01-25
+### Added
 - [#28](https://github.com/devatherock/drone-yaml-validator/issues/28): Flag to treat YAML files with duplicate keys as valid.
 Defaults to treating such files as invalid
 
