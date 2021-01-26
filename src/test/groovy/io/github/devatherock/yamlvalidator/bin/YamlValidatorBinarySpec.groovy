@@ -49,7 +49,7 @@ class YamlValidatorBinarySpec extends Specification {
 
         where:
         continueOnError || invalidCount
-        'true'          || 2
+        'true'          || 3
         'false'         || 1
     }
 
