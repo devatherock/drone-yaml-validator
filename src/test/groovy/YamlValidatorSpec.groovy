@@ -8,8 +8,6 @@ import java.util.logging.Level
 
 /**
  * Test class to test the groovy script
- *
- * @author z0033zk
  */
 class YamlValidatorSpec extends Specification {
     Handler handler = Mock()

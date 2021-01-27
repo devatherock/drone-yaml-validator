@@ -7,8 +7,6 @@ import spock.lang.Unroll
 
 /**
  * Test class to test the built docker images
- *
- * @author z0033zk
  */
 @Log
 class YamlValidatorDockerSpec extends Specification {

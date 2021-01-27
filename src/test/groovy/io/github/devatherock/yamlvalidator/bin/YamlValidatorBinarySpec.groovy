@@ -6,8 +6,6 @@ import spock.lang.Unroll
 
 /**
  * Test class to test the built native binary
- *
- * @author z0033zk
  */
 @Log
 class YamlValidatorBinarySpec extends Specification {
