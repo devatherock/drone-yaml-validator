@@ -4,6 +4,7 @@
 ### Added
 - Functional tests that can be manually run to verify the dev images before releasing
 - test: Used `system-rules` library to test `System.exit` calls
+- chore: `Makefile` for easier testing
 
 ## [1.5.0] - 2021-01-25
 ### Added
