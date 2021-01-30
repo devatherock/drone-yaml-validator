@@ -1,3 +1,6 @@
+import org.junit.Rule
+import org.junit.contrib.java.lang.system.ExpectedSystemExit
+import org.junit.contrib.java.lang.system.internal.CheckExitCalled
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -10,6 +13,9 @@ import java.util.logging.Level
  * Test class to test the groovy script
  */
 class YamlValidatorSpec extends Specification {
+    @Rule
+    public ExpectedSystemExit exitRule = ExpectedSystemExit.none()
+
     Handler handler = Mock()
 
     void setup() {
@@ -47,8 +53,11 @@ class YamlValidatorSpec extends Specification {
         given:
         StringBuilder outputLogBuilder = new StringBuilder()
 
+        and:
+        expectSystemExit(1)
+
         when:
-        YamlValidator.main(['--debug', "${debugEnabled}", '-t', 'true', '-p',
+        YamlValidator.main(['--debug', "${debugEnabled}", '-p',
                             "${System.properties['user.dir']}/src/test/resources/data/invalid"] as String[])
 
         then:
@@ -61,8 +70,8 @@ class YamlValidatorSpec extends Specification {
         levelInvocations * handler.setLevel(Level.FINE)
 
         then:
-        RuntimeException exception = thrown()
-        exception.message == 'Invalid yaml files found'
+        CheckExitCalled exit = thrown()
+        exit.status == 1
 
         where:
         debugEnabled || levelInvocations
@@ -75,8 +84,11 @@ class YamlValidatorSpec extends Specification {
         given:
         StringBuilder outputLogBuilder = new StringBuilder()
 
+        and:
+        expectSystemExit(1)
+
         when: 'debug disabled'
-        YamlValidator.main(['--debug', "${debugEnabled}", '-t', 'true', '-c', "${continueOnError}", '-p',
+        YamlValidator.main(['--debug', "${debugEnabled}", '-c', "${continueOnError}", '-p',
                             "${System.properties['user.dir']}/src/test/resources"] as String[])
 
         then:
@@ -90,13 +102,31 @@ class YamlValidatorSpec extends Specification {
         levelInvocations * handler.setLevel(Level.FINE)
 
         then:
-        RuntimeException exception = thrown()
-        exception.message == 'Invalid yaml files found'
+        CheckExitCalled exit = thrown()
+        exit.status == 1
 
         where:
         debugEnabled | continueOnError || levelInvocations
         true         | true            || 1
         false        | false           || 0
+    }
+
+    void 'test yaml validator - exception parsing arguments'() {
+        given:
+        StringBuilder outputLogBuilder = new StringBuilder()
+
+        and:
+        expectSystemExit(1)
+
+        when:
+        YamlValidator.main(['--debug', '-p', "${System.properties['user.dir']}/src/test/resources/data"] as String[])
+
+        then:
+        0 * handler.publish(_)
+
+        then:
+        CheckExitCalled exit = thrown()
+        exit.status == 1
     }
 
     void 'test yaml validator - duplicate keys allowed'() {
@@ -117,8 +147,11 @@ class YamlValidatorSpec extends Specification {
         given:
         StringBuilder outputLogBuilder = new StringBuilder()
 
+        and:
+        expectSystemExit(1)
+
         when:
-        YamlValidator.main(['-ad', 'false', '-t', 'true', '-p',
+        YamlValidator.main(['-ad', 'false', '-p',
                             "${System.properties['user.dir']}/src/test/resources/data/duplicate"] as String[])
 
         then:
@@ -127,7 +160,11 @@ class YamlValidatorSpec extends Specification {
         outputLog.contains("/duplicate-keys.yml' is invalid")
 
         then:
-        RuntimeException exception = thrown()
-        exception.message == 'Invalid yaml files found'
+        CheckExitCalled exit = thrown()
+        exit.status == 1
+    }
+
+    void expectSystemExit(int status) {
+        exitRule.expectSystemExitWithStatus(status)
     }
 }

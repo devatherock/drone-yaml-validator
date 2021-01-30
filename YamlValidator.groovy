@@ -15,7 +15,6 @@ System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%6$s%n')
 @Field static final Logger LOGGER = Logger.getLogger('YamlValidator.log')
 @Field boolean debug
 @Field boolean shouldContinue
-@Field boolean isTest
 @Field boolean allowDuplicateKeys
 
 ArgumentParser parser = ArgumentParsers.newFor('YamlValidator').build()
@@ -28,10 +27,6 @@ parser.addArgument('-c', '--continue')
         .choices(true, false).setDefault(true)
         .type(Boolean)
         .help('Flag to indicate if processing should be continued on error')
-parser.addArgument('-t', '--test')
-        .choices(true, false).setDefault(false)
-        .type(Boolean)
-        .help('Flag to be used for unit testing')
 parser.addArgument('-p', '--path')
         .setDefault(System.getProperty('user.dir'))
         .type(String)
@@ -52,7 +47,6 @@ try {
 options = parser.parseArgs(ARGS)
 debug = options.getBoolean('debug')
 shouldContinue = options.getBoolean('continue')
-isTest = options.getBoolean('test')
 allowDuplicateKeys = options.getBoolean('allow_duplicate_keys')
 
 if (debug) {
@@ -126,9 +120,5 @@ boolean validateYamlFiles(File directory) {
  * Exits the script because invalid yaml files have been encountered
  */
 void exitWithError() {
-    if (isTest) {
-        throw new RuntimeException('Invalid yaml files found')
-    } else {
-        System.exit(1)
-    }
+    System.exit(1)
 }
