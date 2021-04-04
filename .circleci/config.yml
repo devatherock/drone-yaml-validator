@@ -35,7 +35,7 @@ version: 2.1
 jobs:
   groovy_script_to_jar:
     docker:
-      - image: devatherock/vela-groovy-script-to-jar:0.6.2
+      - image: devatherock/vela-groovy-script-to-jar:0.7.0
         auth:
           username: $DOCKER_USERNAME
           password: $DOCKER_PASSWORD
