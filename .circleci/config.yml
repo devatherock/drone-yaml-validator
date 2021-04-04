@@ -54,7 +54,7 @@ jobs:
             - build
   java_to_native:
     docker:
-      - image: devatherock/java-to-native:0.1.2
+      - image: devatherock/java-to-native:0.1.3
         auth:
           username: $DOCKER_USERNAME
           password: $DOCKER_PASSWORD
