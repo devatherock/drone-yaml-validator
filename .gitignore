@@ -10,3 +10,4 @@
 /out/
 .settings
 YamlValidator
+checkstyle.xml
