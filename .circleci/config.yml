@@ -12,9 +12,6 @@ yaml_validator_image: &yaml_validator_image
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
         
-orbs:
-  gradle: circleci/gradle@2.2.0
-
 work_directory: &work_directory
   working_directory: ~/drone-yaml-validator
 
@@ -33,6 +30,40 @@ executors:
 
 version: 2.1
 jobs:
+  test:
+    executor: jdk-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/drone-yaml-validator
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            - v1-dependencies-
+      - run: |
+          make test
+      - store_artifacts:
+          path: build/reports/jacoco
+      - store_test_results:
+          path: build/test-results
+          
+  build:
+    executor: jdk-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/drone-yaml-validator
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            - v1-dependencies
+      - run: |
+          make coveralls
+      - store_artifacts:
+          path: build/reports/jacoco
+      - store_test_results:
+          path: build/test-results
+
   groovy_script_to_jar:
     docker:
       - image: devatherock/vela-groovy-script-to-jar:0.7.0
@@ -84,12 +115,7 @@ jobs:
             - v1-dependencies-{{ checksum "build.gradle" }}
             - v1-dependencies-
       - run: |
-          git clone --depth=1 --branch=master https://github.com/devatherock/gradle-includes.git ../gradle-includes
-          ./gradlew test --tests '*YamlValidatorBinarySpec*' -x jacocoTestCoverageVerification --no-daemon
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
+          make binary-test
 
   publish_dev:
     executor: jdk-executor
@@ -148,6 +174,24 @@ jobs:
           at: ~/drone-yaml-validator
       - run: sh /scripts/entry-point.sh
       
+  functional_test:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/drone-yaml-validator
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            - v1-dependencies-
+      - run: |
+          make functional-test
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+      
   publish_release:
     executor: jdk-executor
     steps:
@@ -180,25 +224,15 @@ workflows:
   version: 2.1
   build_publish:
     jobs:
-      - gradle/run:
-          name: build
-          executor: jdk-executor
+      - build:
           context:
             - docker-credentials
           filters:
             branches:
               only: master
-          command: test --tests '*YamlValidatorSpec*' coveralls
-          pre-steps:
-            - run:
-                command: |
-                  git clone --depth=1 --branch=master https://github.com/devatherock/gradle-includes.git ../gradle-includes
       - groovy_script_to_jar:
           context:
             - docker-credentials
-          filters:
-            branches:
-              only: master
           requires:
             - build
       - java_to_native:
@@ -231,14 +265,19 @@ workflows:
             - docker-credentials
           requires:
             - publish_dev
+      - functional_test:
+          context:
+            - docker-credentials
+          requires:
+            - test_docker
+            - test_docker_duplicate_keys
+            - test_docker_debug
       - notify_success:
           context:
             - docker-credentials
             - slack-webhook
           requires:
-            - test_docker
-            - test_docker_duplicate_keys
-            - test_docker_debug
+            - functional_test
   release:
     jobs:
       - publish_release:
@@ -257,20 +296,13 @@ workflows:
             - publish_release
   pr_check:
     jobs:
-      - gradle/run:
-          name: test
-          executor: jdk-executor
+      - test:
           context:
             - docker-credentials
           filters:
             branches:
               ignore:
                 - master
-          command: test --tests '*YamlValidatorSpec*'
-          pre-steps:
-            - run:
-                command: |
-                  git clone --depth=1 --branch=master https://github.com/devatherock/gradle-includes.git ../gradle-includes
       - groovy_script_to_jar:
           filters:
             branches:

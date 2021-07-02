@@ -12,11 +12,12 @@ sourceCompatibility = '1.6'
 targetCompatibility = '1.6'
 
 dependencies {
-    implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.13'
-    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.25'
+    implementation group: 'org.codehaus.groovy', name: 'groovy', version: '2.5.14'
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.27'
     implementation group: 'net.sourceforge.argparse4j', name: 'argparse4j', version: '0.8.1'
 
     testImplementation group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.5'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2' // Added to fix security vulnerability
     testImplementation group: 'cglib', name: 'cglib-nodep', version: '3.3.0'
     testImplementation group: 'org.objenesis', name: 'objenesis', version: '3.1'
     testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
@@ -48,4 +49,4 @@ ext.jacoco = [
         ]
     ]
 ]
-apply from: '../gradle-includes/checks.gradle'
+apply from: 'https://raw.githubusercontent.com/devatherock/gradle-includes/master/checks.gradle'
