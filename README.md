@@ -4,7 +4,6 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/eee25e47d4104a20894d2a0f8f35d2fd)](https://www.codacy.com/gh/devatherock/drone-yaml-validator/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=devatherock/drone-yaml-validator&amp;utm_campaign=Badge_Grade)
 [![Docker Pulls - Drone](https://img.shields.io/docker/pulls/devatherock/drone-yaml-validator.svg)](https://hub.docker.com/r/devatherock/drone-yaml-validator/)
 [![Docker Image Size](https://img.shields.io/docker/image-size/devatherock/vela-yaml-validator.svg?sort=date)](https://hub.docker.com/r/devatherock/vela-yaml-validator/)
-[![Docker Image Layers](https://img.shields.io/microbadger/layers/devatherock/vela-yaml-validator.svg)](https://microbadger.com/images/devatherock/vela-yaml-validator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # yaml-validator
 CI plugin to validate yaml files
