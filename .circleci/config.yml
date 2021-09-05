@@ -116,6 +116,8 @@ jobs:
             - v1-dependencies-
       - run: |
           make binary-test
+      - store_test_results:
+          path: build/test-results
 
   publish_dev:
     executor: jdk-executor
@@ -187,6 +189,8 @@ jobs:
             - v1-dependencies-
       - run: |
           make functional-test
+      - store_test_results:
+          path: build/test-results
       - save_cache:
           paths:
             - ~/.gradle
