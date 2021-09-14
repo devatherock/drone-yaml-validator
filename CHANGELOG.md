@@ -8,6 +8,9 @@
 - test: Added functional tests to CI pipeline. The `machine` executor allows executing docker commands
 - chore: Upgraded libraries to fix security vulnerabilities
 
+### Changed
+- chore(deps): update dependency org.codehaus.groovy:groovy to v2.5.15
+
 ## [1.5.0] - 2021-01-25
 ### Added
 - [#28](https://github.com/devatherock/drone-yaml-validator/issues/28): Flag to treat YAML files with duplicate keys as valid.
