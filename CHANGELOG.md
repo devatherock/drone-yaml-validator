@@ -11,6 +11,9 @@
 ### Changed
 - chore(deps): update dependency org.codehaus.groovy:groovy to v2.5.15
 
+### Removed
+- [#58](https://github.com/devatherock/drone-yaml-validator/issues/58): `vela-yaml-validator` publish, so that one image `drone-yaml-validator`, that supports both vela and drone, can be used
+
 ## [1.5.0] - 2021-01-25
 ### Added
 - [#28](https://github.com/devatherock/drone-yaml-validator/issues/28): Flag to treat YAML files with duplicate keys as valid.

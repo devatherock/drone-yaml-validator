@@ -32,7 +32,7 @@ jobs:
           at: ~/drone-yaml-validator
       - run: |
           TAG=1.0.1
-          docker build -t devatherock/drone-yaml-validator:$TAG -t devatherock/vela-yaml-validator:$TAG .
+          docker build -t devatherock/drone-yaml-validator:$TAG -t devatherock/drone-yaml-validator:latest .
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push devatherock/drone-yaml-validator:$TAG
-          docker push devatherock/vela-yaml-validator:$TAG
+          docker push devatherock/drone-yaml-validator:latest
