@@ -1,9 +1,9 @@
 [![CircleCI](https://circleci.com/gh/devatherock/drone-yaml-validator.svg?style=svg)](https://circleci.com/gh/devatherock/drone-yaml-validator)
-[![Version](https://img.shields.io/docker/v/devatherock/vela-yaml-validator?sort=semver)](https://hub.docker.com/r/devatherock/vela-yaml-validator/)
+[![Version](https://img.shields.io/docker/v/devatherock/drone-yaml-validator?sort=semver)](https://hub.docker.com/r/devatherock/drone-yaml-validator/)
 [![Coverage Status](https://coveralls.io/repos/github/devatherock/drone-yaml-validator/badge.svg?branch=master)](https://coveralls.io/github/devatherock/drone-yaml-validator?branch=master)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/eee25e47d4104a20894d2a0f8f35d2fd)](https://www.codacy.com/gh/devatherock/drone-yaml-validator/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=devatherock/drone-yaml-validator&amp;utm_campaign=Badge_Grade)
 [![Docker Pulls - Drone](https://img.shields.io/docker/pulls/devatherock/drone-yaml-validator.svg)](https://hub.docker.com/r/devatherock/drone-yaml-validator/)
-[![Docker Image Size](https://img.shields.io/docker/image-size/devatherock/vela-yaml-validator.svg?sort=date)](https://hub.docker.com/r/devatherock/vela-yaml-validator/)
+[![Docker Image Size](https://img.shields.io/docker/image-size/devatherock/drone-yaml-validator.svg?sort=date)](https://hub.docker.com/r/devatherock/drone-yaml-validator/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # yaml-validator
 CI plugin to validate yaml files
@@ -40,7 +40,7 @@ steps:
     ruleset:
       branch: master
       event: push
-    image: devatherock/vela-yaml-validator:1.5.0
+    image: devatherock/drone-yaml-validator:1.5.0
     parameters:
       debug: false
       continue_on_error: true
@@ -66,7 +66,7 @@ version: 2.1
 jobs:
   validate_yamls:
     docker:
-      - image: devatherock/vela-yaml-validator:1.5.0
+      - image: devatherock/drone-yaml-validator:1.5.0
     working_directory: ~/my-repo
     environment:
       PARAMETER_DEBUG: false

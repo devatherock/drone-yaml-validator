@@ -14,19 +14,19 @@ class YamlValidatorDockerSpec extends Specification {
     @Shared
     def config = [
             'drone': [
-                    'image'    : 'devatherock/drone-yaml-validator:latest',
                     'envPrefix': 'PLUGIN_'
             ],
             'vela' : [
-                    'image'    : 'devatherock/vela-yaml-validator:latest',
                     'envPrefix': 'PARAMETER_'
             ]
     ]
 
+    @Shared
+    String dockerImage = 'devatherock/drone-yaml-validator:latest'
+
     def setupSpec() {
         System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%n')
-        executeCommand("docker pull ${config['drone'].image}")
-        executeCommand("docker pull ${config['vela'].image}")
+        executeCommand("docker pull ${dockerImage}")
     }
 
     @Unroll
@@ -37,7 +37,7 @@ class YamlValidatorDockerSpec extends Specification {
                                      '-w=/work',
                                      '-e', "${config[ci].envPrefix}DEBUG=${debugEnabled}",
                                      '-e', "${config[ci].envPrefix}SEARCH_PATH=/work/src/test/resources/data/${folderName}",
-                                     config[ci].image])
+                                     dockerImage])
 
         then:
         output[0] == expectedExitCode
@@ -89,7 +89,7 @@ class YamlValidatorDockerSpec extends Specification {
                                      '-v', "${System.properties['user.dir']}/src/test/resources/data:/work",
                                      '-w=/work',
                                      '-e', "${config[ci].envPrefix}CONTINUE_ON_ERROR=${continueOnError}",
-                                     config[ci].image])
+                                     dockerImage])
 
         then:
         output[0] == 1
@@ -117,7 +117,7 @@ class YamlValidatorDockerSpec extends Specification {
                                      '-v', "${System.properties['user.dir']}/src/test/resources/data/duplicate:/work",
                                      '-w=/work',
                                      '-e', "${config[ci].envPrefix}ALLOW_DUPLICATE_KEYS=${allowDuplicateKeys}",
-                                     config[ci].image])
+                                     dockerImage])
 
         then:
         output[0] == expectedExitCode
