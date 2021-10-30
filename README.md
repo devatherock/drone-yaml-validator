@@ -16,7 +16,7 @@ docker run --rm \
   -e PLUGIN_DEBUG=true \
   -v path/to/yamls:/work \
   -w=/work \
-  devatherock/drone-yaml-validator:1.5.0
+  devatherock/drone-yaml-validator:2.0.0
 ```
 
 ### CI
@@ -40,7 +40,7 @@ steps:
     ruleset:
       branch: master
       event: push
-    image: devatherock/drone-yaml-validator:1.5.0
+    image: devatherock/drone-yaml-validator:2.0.0
     parameters:
       debug: false
       continue_on_error: true
@@ -52,7 +52,7 @@ steps:
 ```yaml
 steps:
   - name: yaml_validator
-    image: devatherock/drone-yaml-validator:1.5.0
+    image: devatherock/drone-yaml-validator:2.0.0
     settings:
       debug: false
       continue_on_error: true
@@ -66,7 +66,7 @@ version: 2.1
 jobs:
   validate_yamls:
     docker:
-      - image: devatherock/drone-yaml-validator:1.5.0
+      - image: devatherock/drone-yaml-validator:2.0.0
     working_directory: ~/my-repo
     environment:
       PARAMETER_DEBUG: false
@@ -78,7 +78,7 @@ jobs:
 ```
 
 ## Tests
-To test the latest plugin images, run the below command
+To test the latest plugin image, run the below command
 
 ```shell
 make functional-test
