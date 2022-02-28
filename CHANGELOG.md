@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Changed
+- chore: Added changelog-updater for creating missed changelog entries
+
 ## [2.0.0] - 2021-10-29
 ### Added
 - Functional tests that can be manually run to verify the dev images before releasing
