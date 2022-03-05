@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - chore: Added changelog-updater for creating missed changelog entries
+- chore(deps): update dependency org.codehaus.groovy:groovy to v2.5.16
 
 ## [2.0.0] - 2021-10-29
 ### Added
