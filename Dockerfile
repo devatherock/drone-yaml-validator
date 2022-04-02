@@ -1,4 +1,4 @@
-FROM alpine:20220316
+FROM alpine:20220328
 
 LABEL maintainer="devatherock@gmail.com"
 LABEL io.github.devatherock.version="1.4.1"
