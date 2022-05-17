@@ -1,10 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- [#69](https://github.com/devatherock/drone-yaml-validator/issues/69): UPX compression of generated binary
+
 ### Changed
 - chore: Added changelog-updater for creating missed changelog entries
 - chore(deps): update dependency org.codehaus.groovy:groovy to v2.5.16
-- chore(deps): update dependency alpine to v20220316
 - chore(deps): update dependency alpine to v20220328
 - chore: Used custom ssh key to push to github
 

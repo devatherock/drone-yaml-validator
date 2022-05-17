@@ -26,7 +26,6 @@ class YamlValidatorDockerSpec extends Specification {
 
     def setupSpec() {
         System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%n')
-        executeCommand("docker pull ${dockerImage}")
     }
 
     @Unroll

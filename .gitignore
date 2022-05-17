@@ -10,4 +10,5 @@
 /out/
 .settings
 YamlValidator
+code-formatter.xml
 checkstyle.xml

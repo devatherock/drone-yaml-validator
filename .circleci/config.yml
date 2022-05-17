@@ -119,7 +119,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/drone-yaml-validator
-      - run: sh /scripts/entry-point.sh
+      - run: |
+          sh /scripts/entry-point.sh
+          upx -4 YamlValidator
       - persist_to_workspace:
           root: ~/drone-yaml-validator
           paths:
