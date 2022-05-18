@@ -106,7 +106,7 @@ jobs:
             - build
   java_to_native:
     docker:
-      - image: devatherock/java-to-native:0.1.3
+      - image: devatherock/java-to-native:1.0.0
         auth:
           username: $DOCKER_USERNAME
           password: $DOCKER_PASSWORD
@@ -126,21 +126,6 @@ jobs:
           root: ~/drone-yaml-validator
           paths:
             - YamlValidator
-            
-  test_binary:
-    executor: jdk-executor
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            - v1-dependencies-
-      - run: |
-          make binary-test
-      - store_test_results:
-          path: build/test-results
 
   publish_dev:
     executor: jdk-executor
@@ -261,16 +246,11 @@ workflows:
             - docker-credentials
           requires:
             - groovy_script_to_jar
-      - test_binary:
-          context:
-            - docker-credentials
-          requires:
-            - java_to_native
       - publish_dev:
           context:
             - docker-credentials
           requires:
-            - test_binary
+            - java_to_native
       - test_docker:
           context:
             - docker-credentials
