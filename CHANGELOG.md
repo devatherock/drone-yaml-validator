@@ -9,6 +9,7 @@
 - chore(deps): update dependency org.codehaus.groovy:groovy to v2.5.16
 - chore(deps): update dependency alpine to v20220328
 - chore: Used custom ssh key to push to github
+- Used docker image with upx in CI pipeline
 
 ## [2.0.0] - 2021-10-29
 ### Added

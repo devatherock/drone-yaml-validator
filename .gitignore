@@ -12,3 +12,4 @@
 YamlValidator
 code-formatter.xml
 checkstyle.xml
+*artifacts.txt

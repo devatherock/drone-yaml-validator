@@ -6,8 +6,6 @@ test:
 	./gradlew test --tests '*YamlValidatorSpec*'
 coveralls:
 	./gradlew test --tests '*YamlValidatorSpec*' coveralls
-binary-test:
-	./gradlew test --tests '*YamlValidatorBinarySpec*' -x jacocoTestCoverageVerification --no-daemon
 functional-test:
 	./gradlew test --tests '*YamlValidatorDockerSpec*' -x jacocoTestCoverageVerification --no-daemon
 jar-build:
@@ -22,9 +20,9 @@ binary-build:
 	docker run --rm \
 	-v $(CURDIR):/work \
 	-w=/work \
+	-it --entrypoint='' \
 	-e PLUGIN_JAR_NAME=build/native/libs/YamlValidator.jar \
 	-e PLUGIN_CONFIG_FILE=config/graal.yml \
-	devatherock/java-to-native:0.1.3
-	upx -4 YamlValidator
+	devatherock/java-to-native:1.0.0 sh /scripts/entry-point.sh && upx -4 YamlValidator
 docker-build:
 	docker build -t devatherock/drone-yaml-validator:$(DOCKER_TAG) .
