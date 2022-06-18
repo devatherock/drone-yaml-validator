@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - chore(deps): update dependency org.codehaus.groovy:groovy to v2.5.17
+- chore(deps): update dependency cimg/openjdk to v18
 
 ## [2.1.0] - 2022-05-18
 ### Added
