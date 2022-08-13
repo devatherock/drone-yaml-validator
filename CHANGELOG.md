@@ -6,6 +6,7 @@
 - chore(deps): update dependency alpine to v20220715
 - fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.18
 - fix(deps): update dependency org.objenesis:objenesis to v3.3
+- chore(deps): update cimg/openjdk docker tag to v18
 
 ## [2.1.0] - 2022-05-18
 ### Added
