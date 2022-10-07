@@ -8,6 +8,7 @@
 - fix(deps): update dependency org.objenesis:objenesis to v3.3
 - fix(deps): update dependency org.yaml:snakeyaml to v1.31
 - fix(deps): update dependency org.yaml:snakeyaml to v1.33
+- feat: Updated changelog updater user
 
 ## [2.1.0] - 2022-05-18
 ### Added
