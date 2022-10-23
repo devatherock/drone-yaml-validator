@@ -10,6 +10,7 @@
 - fix(deps): update dependency org.yaml:snakeyaml to v1.33
 - feat: Updated changelog updater user
 - fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.19
+- chore(deps): update dependency gradle to v6.9.3
 
 ## [2.1.0] - 2022-05-18
 ### Added
