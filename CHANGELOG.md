@@ -11,6 +11,7 @@
 - feat: Updated changelog updater user
 - fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.19
 - chore(deps): update dependency gradle to v6.9.3
+- chore(deps): update cimg/openjdk docker tag to v19
 
 ## [2.1.0] - 2022-05-18
 ### Added
