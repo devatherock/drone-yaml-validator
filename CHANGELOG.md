@@ -12,6 +12,7 @@
 - fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.19
 - chore(deps): update dependency gradle to v6.9.3
 - chore(deps): update alpine docker tag to v20221110
+- fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.20
 
 ## [2.1.0] - 2022-05-18
 ### Added
