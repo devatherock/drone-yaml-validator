@@ -12,7 +12,7 @@ sourceCompatibility = '1.6'
 targetCompatibility = '1.6'
 
 dependencies {
-    implementation group: 'org.codehaus.groovy', name: 'groovy', version: '2.5.19'
+    implementation group: 'org.codehaus.groovy', name: 'groovy', version: '2.5.20'
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.33'
     implementation group: 'net.sourceforge.argparse4j', name: 'argparse4j', version: '0.9.0'
 
