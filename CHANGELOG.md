@@ -17,6 +17,7 @@
 - chore(deps): update alpine docker tag to v20230208
 - chore(deps): update dependency gradle to v6.9.4
 - chore(deps): update plugin com.github.kt3k.coveralls to v2.12.2
+- fix(deps): update dependency org.yaml:snakeyaml to v2
 
 ## [2.1.0] - 2022-05-18
 ### Added
