@@ -18,6 +18,7 @@
 - chore(deps): update dependency gradle to v6.9.4
 - chore(deps): update plugin com.github.kt3k.coveralls to v2.12.2
 - fix(deps): update dependency org.yaml:snakeyaml to v2
+- fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.22
 
 ## [2.1.0] - 2022-05-18
 ### Added
