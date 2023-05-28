@@ -142,6 +142,20 @@ jobs:
           docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
           docker push devatherock/drone-yaml-validator:$TAG
           docker push devatherock/drone-yaml-validator:latest
+          
+  dockerhub_readme:
+    machine:
+      image: ubuntu-2204:2023.04.2
+    steps:
+      - checkout
+      - run: |
+          docker run -v $PWD:/workspace \
+              -e DOCKERHUB_USERNAME \
+              -e DOCKERHUB_PASSWORD \
+              -e DOCKERHUB_REPOSITORY='devatherock/drone-yaml-validator' \
+              -e SHORT_DESCRIPTION='CI plugin to validate yaml files' \
+              -e README_FILEPATH='/workspace/README.md' \
+              peterevans/dockerhub-description:3.4.1
 
   test_docker:
     <<: *yaml_validator_image
@@ -252,6 +266,12 @@ workflows:
             - docker-credentials
           requires:
             - java_to_native
+      - dockerhub_readme:
+          context:
+            - docker-credentials
+            - dockerhub-readme-credentials
+          requires:
+            - publish_dev
       - test_docker:
           context:
             - docker-credentials
