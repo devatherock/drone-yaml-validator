@@ -2,24 +2,14 @@
 
 ## [Unreleased]
 ### Changed
-- chore(deps): update dependency org.codehaus.groovy:groovy to v2.5.17
-- chore(deps): update dependency alpine to v20220715
-- fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.18
 - fix(deps): update dependency org.objenesis:objenesis to v3.3
-- fix(deps): update dependency org.yaml:snakeyaml to v1.31
-- fix(deps): update dependency org.yaml:snakeyaml to v1.33
 - feat: Updated changelog updater user
-- fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.19
-- chore(deps): update dependency gradle to v6.9.3
-- chore(deps): update alpine docker tag to v20221110
-- fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.20
-- fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.21
-- chore(deps): update alpine docker tag to v20230208
 - chore(deps): update dependency gradle to v6.9.4
 - chore(deps): update plugin com.github.kt3k.coveralls to v2.12.2
 - fix(deps): update dependency org.yaml:snakeyaml to v2
 - fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.22
 - chore(deps): update alpine docker tag to v20230329
+- Updated dockerhub readme in CI pipeline
 
 ## [2.1.0] - 2022-05-18
 ### Added
