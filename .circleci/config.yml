@@ -138,10 +138,13 @@ jobs:
       - run: |
           TAG=${CIRCLE_SHA1:0:8}
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker build -t devatherock/drone-yaml-validator:$TAG .
-          docker tag devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:latest
-          docker push devatherock/drone-yaml-validator:$TAG
-          docker push devatherock/drone-yaml-validator:latest
+          docker buildx create --name rockbuilder \
+            --driver docker-container --use --bootstrap
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --push \
+            -t devatherock/drone-yaml-validator:$TAG \
+            -t devatherock/drone-yaml-validator:latest .
           
   dockerhub_readme:
     machine:
@@ -226,9 +229,10 @@ jobs:
           TAG=${CIRCLE_TAG#v}
           DEV_TAG=${CIRCLE_SHA1:0:8}
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker pull devatherock/drone-yaml-validator:$DEV_TAG
-          docker tag devatherock/drone-yaml-validator:$DEV_TAG devatherock/drone-yaml-validator:$TAG
-          docker push devatherock/drone-yaml-validator:$TAG
+          docker buildx create --name rockbuilder \
+            --driver docker-container --use --bootstrap
+          docker buildx imagetools create \
+            -t devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:$DEV_TAG
 
   notify_success:
     <<: *slack_image
