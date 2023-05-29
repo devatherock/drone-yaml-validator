@@ -10,6 +10,7 @@
 - fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.22
 - chore(deps): update alpine docker tag to v20230329
 - Updated dockerhub readme in CI pipeline
+- [#102](https://github.com/devatherock/drone-yaml-validator/issues/102): Built a multi-arch docker image
 
 ## [2.1.0] - 2022-05-18
 ### Added
