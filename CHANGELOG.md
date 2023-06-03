@@ -11,6 +11,7 @@
 - chore(deps): update alpine docker tag to v20230329
 - Updated dockerhub readme in CI pipeline
 - [#102](https://github.com/devatherock/drone-yaml-validator/issues/102): Built a multi-arch docker image
+- chore(deps): update cimg/openjdk docker tag to v20
 
 ## [2.1.0] - 2022-05-18
 ### Added
