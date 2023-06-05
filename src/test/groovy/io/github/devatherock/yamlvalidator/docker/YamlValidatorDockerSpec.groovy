@@ -22,7 +22,7 @@ class YamlValidatorDockerSpec extends Specification {
     ]
 
     @Shared
-    String dockerImage = 'devatherock/drone-yaml-validator:latest'
+    String dockerImage = "devatherock/drone-yaml-validator:${System.env.DOCKER_TAG ?: 'latest'}"
 
     def setupSpec() {
         System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%n')

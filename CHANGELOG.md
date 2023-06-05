@@ -12,6 +12,7 @@
 - Updated dockerhub readme in CI pipeline
 - [#102](https://github.com/devatherock/drone-yaml-validator/issues/102): Built a multi-arch docker image
 - Cached build dependencies separately
+- Integration tested the arm image
 
 ## [2.1.0] - 2022-05-18
 ### Added

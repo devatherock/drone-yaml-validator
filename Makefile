@@ -1,4 +1,4 @@
-DOCKER_TAG=latest
+docker_tag=latest
 
 clean:
 	./gradlew clean
@@ -7,7 +7,7 @@ test:
 coveralls:
 	./gradlew test --tests '*YamlValidatorSpec*' coveralls
 functional-test:
-	./gradlew test --tests '*YamlValidatorDockerSpec*' -x jacocoTestCoverageVerification --no-daemon
+	DOCKER_TAG=$(docker_tag) ./gradlew test --tests '*YamlValidatorDockerSpec*' -x jacocoTestCoverageVerification
 jar-build:
 	docker run --rm \
 	-v $(CURDIR):/work \
@@ -25,4 +25,4 @@ binary-build:
 	-e PLUGIN_CONFIG_FILE=config/graal.yml \
 	devatherock/java-to-native:1.0.0 sh /scripts/entry-point.sh && upx -4 YamlValidator
 docker-build:
-	docker build -t devatherock/drone-yaml-validator:$(DOCKER_TAG) .
+	docker build -t devatherock/drone-yaml-validator:$(docker_tag) .

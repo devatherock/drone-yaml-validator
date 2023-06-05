@@ -32,6 +32,16 @@ executors:
           password: $DOCKER_PASSWORD
     <<: *resource_class
     <<: *work_directory
+  machine-executor:
+    machine:
+      image: ubuntu-2004:202010-01
+    resource_class: medium
+    <<: *work_directory
+  arm-executor:
+    machine:
+      image: ubuntu-2004:2022.04.1
+    resource_class: arm.medium
+    <<: *work_directory
 
 version: 2.1
 jobs:
@@ -204,9 +214,10 @@ jobs:
       - run: sh /scripts/entry-point.sh
       
   functional_test:
-    machine:
-      image: ubuntu-2004:202010-01
-      resource_class: medium
+    parameters:
+      runner:
+        type: executor
+    executor: << parameters.runner >>
     steps:
       - checkout
       - attach_workspace:
@@ -298,8 +309,17 @@ workflows:
           requires:
             - publish_dev
       - functional_test:
+          name: functional_test_amd
           context:
             - docker-credentials
+          runner: machine-executor
+          requires:
+            - dockerhub_readme      
+      - functional_test:
+          name: functional_test_arm
+          context:
+            - docker-credentials
+          runner: arm-executor
           requires:
             - test_docker
             - test_docker_duplicate_keys
@@ -309,7 +329,9 @@ workflows:
             - docker-credentials
             - slack-webhook
           requires:
-            - functional_test
+            - functional_test_amd
+            - functional_test_arm
+
   release:
     jobs:
       - publish_release:
@@ -326,6 +348,7 @@ workflows:
             - slack-webhook
           requires:
             - publish_release
+
   pr_check:
     jobs:
       - changelog_updater:
