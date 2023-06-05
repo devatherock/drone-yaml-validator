@@ -85,6 +85,10 @@ jobs:
           path: build/reports/jacoco
       - store_test_results:
           path: build/test-results
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}          
 
   groovy_script_to_jar:
     docker:
@@ -207,8 +211,8 @@ jobs:
           at: ~/drone-yaml-validator
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            - v1-dependencies-
+            - v1-integration-{{ checksum "build.gradle" }}
+            - v1-integration-
       - run: |
           make functional-test
       - store_test_results:
@@ -216,7 +220,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
+          key: v1-integration-{{ checksum "build.gradle" }}
       
   publish_release:
     executor: jdk-executor
