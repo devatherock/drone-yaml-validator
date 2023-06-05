@@ -141,7 +141,7 @@ jobs:
           at: ~/drone-yaml-validator
       - run: |
           TAG=${CIRCLE_SHA1:0:8}
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker buildx create --name rockbuilder \
             --driver docker-container --use --bootstrap
           docker buildx build \
@@ -153,6 +153,7 @@ jobs:
   dockerhub_readme:
     machine:
       image: ubuntu-2204:2023.04.2
+      resource_class: medium
     steps:
       - checkout
       - run: |
@@ -233,7 +234,7 @@ jobs:
       - run: |
           TAG=${CIRCLE_TAG#v}
           DEV_TAG=${CIRCLE_SHA1:0:8}
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker buildx create --name rockbuilder \
             --driver docker-container --use --bootstrap
           docker buildx imagetools create \
