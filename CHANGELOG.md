@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- [#91](https://github.com/devatherock/drone-yaml-validator/issues/91): Allowed yamls with custom tags
+
 ### Changed
 - fix(deps): update dependency org.objenesis:objenesis to v3.3
 - feat: Updated changelog updater user
@@ -14,7 +17,7 @@
 - Cached build dependencies separately
 - Integration tested the arm image
 - [#106](https://github.com/devatherock/drone-yaml-validator/issues/106): Built the arm binary in an arm machine
-- Upgraded `java-to-native` to `2.1.0`
+- Upgraded `java-to-native` to `2.2.0`
 
 ## [2.1.0] - 2022-05-18
 ### Added

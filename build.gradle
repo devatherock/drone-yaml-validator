@@ -2,6 +2,7 @@ plugins {
     id 'groovy'
     id 'jacoco'
     id 'com.github.kt3k.coveralls' version '2.12.2'
+    id 'com.diffplug.spotless' version '6.19.0'
 }
 
 repositories {
@@ -14,8 +15,8 @@ targetCompatibility = '1.6'
 dependencies {
     // Groovy version should match the version used within scriptjar
     implementation group: 'org.codehaus.groovy', name: 'groovy', version: '2.5.7'
-    
-    // Build dependency versions should match the ones used within the script 
+
+    // Build dependency versions should match the ones used within the script
     implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
     implementation group: 'net.sourceforge.argparse4j', name: 'argparse4j', version: '0.9.0'
 
@@ -49,6 +50,10 @@ ext.jacoco = [
             'COMPLEXITY': 0.66, // DO NOT CHANGE unless there is a huge improvement. The values fluctuate in CI
             'INSTRUCTION': 0.93,
             'LINE': 0.90
+        ],
+        'TagIgnoringConstruct': [
+            'INSTRUCTION': 0.98,
+            'LINE': 0.75
         ]
     ]
 ]

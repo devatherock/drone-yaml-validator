@@ -1,13 +1,14 @@
+import java.util.logging.Handler
+import java.util.logging.Level
+import java.util.logging.LogRecord
+import java.util.logging.Logger
+
 import org.junit.Rule
 import org.junit.contrib.java.lang.system.ExpectedSystemExit
 import org.junit.contrib.java.lang.system.internal.CheckExitCalled
+
 import spock.lang.Specification
 import spock.lang.Unroll
-
-import java.util.logging.Handler
-import java.util.logging.LogRecord
-import java.util.logging.Logger
-import java.util.logging.Level
 
 /**
  * Test class to test the groovy script
@@ -158,6 +159,41 @@ class YamlValidatorSpec extends Specification {
         (1.._) * handler.publish(!null as LogRecord) >> { outputLogBuilder.append(it.message) }
         String outputLog = outputLogBuilder.toString()
         outputLog.contains("/duplicate-keys.yml' is invalid")
+
+        then:
+        CheckExitCalled exit = thrown()
+        exit.status == 1
+    }
+
+    void 'test yaml validator - unknown tags allowed'() {
+        given:
+        StringBuilder outputLogBuilder = new StringBuilder()
+
+        when:
+        YamlValidator.main(['-iu', 'true', '-p',
+                            "${System.properties['user.dir']}/src/test/resources/data/tags"] as String[])
+
+        then:
+        (1.._) * handler.publish(!null as LogRecord) >> { outputLogBuilder.append(it.message) }
+        String outputLog = outputLogBuilder.toString()
+        outputLog.contains("/include.yml' is valid")
+    }
+
+    void 'test yaml validator - unknown tags not allowed'() {
+        given:
+        StringBuilder outputLogBuilder = new StringBuilder()
+
+        and:
+        expectSystemExit(1)
+
+        when:
+        YamlValidator.main(['-iu', 'false', '-p',
+                            "${System.properties['user.dir']}/src/test/resources/data/tags"] as String[])
+
+        then:
+        (1.._) * handler.publish(!null as LogRecord) >> { outputLogBuilder.append(it.message) }
+        String outputLog = outputLogBuilder.toString()
+        outputLog.contains("/include.yml' is invalid")
 
         then:
         CheckExitCalled exit = thrown()
