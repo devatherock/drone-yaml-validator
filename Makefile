@@ -3,9 +3,9 @@ docker_tag=latest
 clean:
 	./gradlew clean
 test:
-	./gradlew test --tests '*YamlValidatorSpec*'
+	./gradlew spotlessApply test --tests '*YamlValidatorSpec*'
 coveralls:
-	./gradlew test --tests '*YamlValidatorSpec*' coveralls
+	./gradlew spotlessCheck test --tests '*YamlValidatorSpec*' coveralls
 functional-test:
 	DOCKER_TAG=$(docker_tag) ./gradlew test --tests '*YamlValidatorDockerSpec*' -x jacocoTestCoverageVerification
 jar-build:

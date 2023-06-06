@@ -16,7 +16,7 @@ docker run --rm \
   -e PLUGIN_DEBUG=true \
   -v path/to/yamls:/work \
   -w=/work \
-  devatherock/drone-yaml-validator:2.0.0
+  devatherock/drone-yaml-validator:latest
 ```
 
 ### CI
@@ -32,6 +32,9 @@ The following parameters can be set to configure the plugin.
 *   **allow_duplicate_keys** - Flag to indicate if YAML files with duplicate keys should be considered valid. Optional,
     defaults to false
 
+*   **ignore_unknown_tags** - Flag to indicate if YAML files with unknown tags should be considered valid. Optional,
+    defaults to true
+
 #### vela
 
 ```yaml
@@ -40,11 +43,12 @@ steps:
     ruleset:
       branch: master
       event: push
-    image: devatherock/drone-yaml-validator:2.0.0
+    image: devatherock/drone-yaml-validator:latest
     parameters:
       debug: false
       continue_on_error: true
       allow_duplicate_keys: false
+      ignore_unknown_tags: true
 ```
 
 #### drone
@@ -52,11 +56,12 @@ steps:
 ```yaml
 steps:
   - name: yaml_validator
-    image: devatherock/drone-yaml-validator:2.0.0
+    image: devatherock/drone-yaml-validator:latest
     settings:
       debug: false
       continue_on_error: true
       allow_duplicate_keys: false
+      ignore_unknown_tags: true
 ```
 
 #### CircleCI
@@ -66,12 +71,13 @@ version: 2.1
 jobs:
   validate_yamls:
     docker:
-      - image: devatherock/drone-yaml-validator:2.0.0
+      - image: devatherock/drone-yaml-validator:latest
     working_directory: ~/my-repo
     environment:
       PARAMETER_DEBUG: false
       PARAMETER_CONTINUE_ON_ERROR: true
       PARAMETER_ALLOW_DUPLICATE_KEYS: false
+      PARAMETER_IGNORE_UNKNOWN_TAGS: true
     steps:
       - checkout
       - run: sh /scripts/entry-point.sh

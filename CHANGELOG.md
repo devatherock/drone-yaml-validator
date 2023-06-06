@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- [#91](https://github.com/devatherock/drone-yaml-validator/issues/91): Allowed yamls with custom tags
+
 ### Changed
 - fix(deps): update dependency org.objenesis:objenesis to v3.3
 - feat: Updated changelog updater user
