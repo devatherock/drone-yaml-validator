@@ -122,7 +122,7 @@ jobs:
 
   java_to_native:
     docker:
-      - image: devatherock/java-to-native:2.1.0
+      - image: devatherock/java-to-native:latest
         auth:
           username: $DOCKER_USERNAME
           password: $DOCKER_PASSWORD
@@ -156,13 +156,12 @@ jobs:
               --entrypoint='' \
               -e PARAMETER_JAR_NAME=build/native/libs/YamlValidator.jar \
               -e PARAMETER_CONFIG_FILE=config/graal.yml \
-              devatherock/java-to-native:2.1.0 sh /scripts/entry-point.sh && upx -4 YamlValidator
+              devatherock/java-to-native:latest sh /scripts/entry-point.sh && upx -4 YamlValidator
           TAG=${CIRCLE_SHA1:0:8}-arm64    
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker build \
             -t devatherock/drone-yaml-validator:$TAG \
             -t devatherock/drone-yaml-validator:arm64 .
-          docker image push --all-tags devatherock/drone-yaml-validator
 
   publish:
     executor: jdk-executor
@@ -178,7 +177,6 @@ jobs:
             -t devatherock/drone-yaml-validator:$TAG \
             -t devatherock/drone-yaml-validator:latest \
             -t devatherock/drone-yaml-validator:amd64 .
-          docker image push --all-tags devatherock/drone-yaml-validator
           
   dockerhub_readme:
     machine:
@@ -385,20 +383,22 @@ workflows:
 
   pr_check:
     jobs:
-      - changelog_updater:
-          context:
-            - docker-credentials
-            - changelog-updater-credentials
-          <<: *pr_filter
-      - test:
-          context:
-            - docker-credentials
-          <<: *pr_filter
-          requires:
-            - changelog_updater
       - groovy_script_to_jar:
           filters:
             branches:
               ignore: master
+      - java_to_native:
+          context:
+            - docker-credentials
           requires:
-            - test
+            - groovy_script_to_jar
+      - publish_arm:
+          context:
+            - docker-credentials
+          requires:
+            - groovy_script_to_jar
+      - publish:
+          context:
+            - docker-credentials
+          requires:
+            - java_to_native
