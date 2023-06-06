@@ -1,6 +1,7 @@
 package io.github.devatherock.yamlvalidator.docker
 
 import groovy.util.logging.Log
+
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -136,6 +137,40 @@ class YamlValidatorDockerSpec extends Specification {
                 "/duplicate-keys.yml' is invalid",
                 "/duplicate-keys.yml' is valid",
                 "/duplicate-keys.yml' is invalid"
+        ]
+        ci << [
+                'drone', 'drone',
+                'vela', 'vela'
+        ]
+    }
+
+    @Unroll
+    void 'test yaml validator - ignore unknown tags: #ignoreUnknownTags, image: #ci'() {
+        when:
+        def output = executeCommand(['docker', 'run', '--rm',
+                                     '-v', "${System.properties['user.dir']}/src/test/resources/data/tags:/work",
+                                     '-w=/work',
+                                     '-e', "${config[ci].envPrefix}IGNORE_UNKNOWN_TAGS=${ignoreUnknownTags}",
+                                     dockerImage])
+
+        then:
+        output[0] == expectedExitCode
+        output[1].contains(outputText)
+
+        where:
+        ignoreUnknownTags << [
+                true, false,
+                true, false
+        ]
+        expectedExitCode << [
+                0, 1,
+                0, 1
+        ]
+        outputText << [
+                "/include.yml' is valid",
+                "/include.yml' is invalid",
+                "/include.yml' is valid",
+                "/include.yml' is invalid"
         ]
         ci << [
                 'drone', 'drone',

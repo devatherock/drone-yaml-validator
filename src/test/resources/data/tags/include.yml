@@ -1,0 +1,7 @@
+---
+title: Title of this file
+language: german
+date: 16.12.2022
+draft: true
+elements:
+  - !include header.yml
