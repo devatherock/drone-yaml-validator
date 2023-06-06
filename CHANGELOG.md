@@ -13,6 +13,7 @@
 - [#102](https://github.com/devatherock/drone-yaml-validator/issues/102): Built a multi-arch docker image
 - Cached build dependencies separately
 - Integration tested the arm image
+- [#106](https://github.com/devatherock/drone-yaml-validator/issues/106): Built the arm binary in an arm machine
 
 ## [2.1.0] - 2022-05-18
 ### Added
