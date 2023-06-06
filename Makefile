@@ -20,9 +20,9 @@ binary-build:
 	docker run --rm \
 	-v $(CURDIR):/work \
 	-w=/work \
-	-it --entrypoint='' \
+	--entrypoint='' \
 	-e PLUGIN_JAR_NAME=build/native/libs/YamlValidator.jar \
 	-e PLUGIN_CONFIG_FILE=config/graal.yml \
-	devatherock/java-to-native:1.0.0 sh /scripts/entry-point.sh && upx -4 YamlValidator
+	devatherock/java-to-native:2.0.0 sh /scripts/entry-point.sh && upx -4 YamlValidator
 docker-build:
 	docker build -t devatherock/drone-yaml-validator:$(docker_tag) .

@@ -119,9 +119,10 @@ jobs:
           root: ~/drone-yaml-validator
           paths:
             - build
+
   java_to_native:
     docker:
-      - image: devatherock/java-to-native:1.0.0
+      - image: devatherock/java-to-native:2.0.0
         auth:
           username: $DOCKER_USERNAME
           password: $DOCKER_PASSWORD
@@ -142,7 +143,28 @@ jobs:
           paths:
             - YamlValidator
 
-  publish_dev:
+  publish_arm:
+    executor: arm-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/drone-yaml-validator
+      - run: |
+          docker run --rm \
+              -v $PWD:/work \
+              -w /work \
+              --entrypoint='' \
+              -e PARAMETER_JAR_NAME=build/native/libs/YamlValidator.jar \
+              -e PARAMETER_CONFIG_FILE=config/graal.yml \
+              devatherock/java-to-native:2.0.0-arm64 sh /scripts/entry-point.sh && upx -4 YamlValidator
+          TAG=${CIRCLE_SHA1:0:8}-arm64    
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker build \
+            -t devatherock/drone-yaml-validator:$TAG \
+            -t devatherock/drone-yaml-validator:arm64 .
+          docker image push --all-tags devatherock/drone-yaml-validator
+
+  publish:
     executor: jdk-executor
     steps:
       - checkout
@@ -152,13 +174,11 @@ jobs:
       - run: |
           TAG=${CIRCLE_SHA1:0:8}
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-          docker buildx create --name rockbuilder \
-            --driver docker-container --use --bootstrap
-          docker buildx build \
-            --platform linux/amd64,linux/arm64 \
-            --push \
+          docker build \
             -t devatherock/drone-yaml-validator:$TAG \
-            -t devatherock/drone-yaml-validator:latest .
+            -t devatherock/drone-yaml-validator:latest \
+            -t devatherock/drone-yaml-validator:amd64 .
+          docker image push --all-tags devatherock/drone-yaml-validator
           
   dockerhub_readme:
     machine:
@@ -215,6 +235,8 @@ jobs:
       
   functional_test:
     parameters:
+      command_args:
+        type: string
       runner:
         type: executor
     executor: << parameters.runner >>
@@ -227,7 +249,7 @@ jobs:
             - v1-integration-{{ checksum "build.gradle" }}
             - v1-integration-
       - run: |
-          make functional-test
+          make functional-test << parameters.command_args >>
       - store_test_results:
           path: build/test-results
       - save_cache:
@@ -246,10 +268,14 @@ jobs:
           TAG=${CIRCLE_TAG#v}
           DEV_TAG=${CIRCLE_SHA1:0:8}
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-          docker buildx create --name rockbuilder \
-            --driver docker-container --use --bootstrap
-          docker buildx imagetools create \
-            -t devatherock/drone-yaml-validator:$TAG devatherock/drone-yaml-validator:$DEV_TAG
+          docker pull devatherock/drone-yaml-validator:$DEV_TAG
+          docker tag devatherock/drone-yaml-validator:$DEV_TAG devatherock/drone-yaml-validator:$TAG
+          docker tag devatherock/drone-yaml-validator:$DEV_TAG devatherock/drone-yaml-validator:${TAG}-amd64
+          docker pull devatherock/drone-yaml-validator:${DEV_TAG}-arm64
+          docker tag devatherock/drone-yaml-validator:${DEV_TAG}-arm64 devatherock/drone-yaml-validator:${TAG}-arm64
+          docker push devatherock/drone-yaml-validator:$TAG
+          docker push devatherock/drone-yaml-validator:${TAG}-amd64
+          docker push devatherock/drone-yaml-validator:${TAG}-arm64
 
   notify_success:
     <<: *slack_image
@@ -282,7 +308,12 @@ workflows:
             - docker-credentials
           requires:
             - groovy_script_to_jar
-      - publish_dev:
+      - publish_arm:
+          context:
+            - docker-credentials
+          requires:
+            - groovy_script_to_jar
+      - publish:
           context:
             - docker-credentials
           requires:
@@ -292,43 +323,46 @@ workflows:
             - docker-credentials
             - dockerhub-readme-credentials
           requires:
-            - publish_dev
+            - publish_arm
       - test_docker:
           context:
             - docker-credentials
           requires:
-            - publish_dev
+            - publish
       - test_docker_duplicate_keys:
           context:
             - docker-credentials
           requires:
-            - publish_dev
+            - publish
       - test_docker_debug:
           context:
             - docker-credentials
           requires:
-            - publish_dev
+            - publish
       - functional_test:
           name: functional_test_amd
           context:
             - docker-credentials
           runner: machine-executor
+          command_args: ''
           requires:
-            - dockerhub_readme      
+            - publish
       - functional_test:
           name: functional_test_arm
           context:
             - docker-credentials
           runner: arm-executor
+          command_args: 'docker_tag=arm64'
           requires:
-            - test_docker
-            - test_docker_duplicate_keys
-            - test_docker_debug
+            - dockerhub_readme
       - notify_success:
           context:
             - docker-credentials
             - slack-webhook
           requires:
+            - test_docker
+            - test_docker_duplicate_keys
+            - test_docker_debug
             - functional_test_amd
             - functional_test_arm
 
