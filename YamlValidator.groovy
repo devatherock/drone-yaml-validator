@@ -1,5 +1,5 @@
 @Grab(group = 'org.yaml', module = 'snakeyaml', version = '1.27')
-@Grab(group = 'net.sourceforge.argparse4j', module = 'argparse4j', version = '0.8.1')
+@Grab(group = 'net.sourceforge.argparse4j', module = 'argparse4j', version = '0.9.0')
 
 import groovy.transform.Field
 import java.util.logging.Logger

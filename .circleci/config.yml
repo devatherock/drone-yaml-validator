@@ -122,7 +122,7 @@ jobs:
 
   java_to_native:
     docker:
-      - image: devatherock/java-to-native:2.0.0
+      - image: devatherock/java-to-native:2.1.0
         auth:
           username: $DOCKER_USERNAME
           password: $DOCKER_PASSWORD
@@ -156,7 +156,7 @@ jobs:
               --entrypoint='' \
               -e PARAMETER_JAR_NAME=build/native/libs/YamlValidator.jar \
               -e PARAMETER_CONFIG_FILE=config/graal.yml \
-              devatherock/java-to-native:2.0.0-arm64 sh /scripts/entry-point.sh && upx -4 YamlValidator
+              devatherock/java-to-native:2.1.0 sh /scripts/entry-point.sh && upx -4 YamlValidator
           TAG=${CIRCLE_SHA1:0:8}-arm64    
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker build \
