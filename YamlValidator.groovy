@@ -26,6 +26,7 @@ System.setProperty('java.util.logging.SimpleFormatter.format', '%5$s%6$s%n')
 @Field boolean shouldContinue
 @Field boolean allowDuplicateKeys
 @Field boolean ignoreUnknownTags
+@Field List<String> allowedTags
 
 ArgumentParser parser = ArgumentParsers.newFor('YamlValidator').build()
         .defaultHelp(true)
@@ -49,6 +50,9 @@ parser.addArgument('-iu', '--ignore-unknown-tags')
         .choices(true, false).setDefault(true)
         .type(Boolean)
         .help('Flag to indicate if YAML files with unknown tags should be considered valid')
+parser.addArgument('-at', '--allowed-tags')
+        .type(String)
+        .help('Comma separated list of custom tags to allow')
 
 final String[] ARGS = getProperty('args') as String[]
 def options
@@ -63,6 +67,11 @@ debug = options.getBoolean('debug')
 shouldContinue = options.getBoolean('continue')
 allowDuplicateKeys = options.getBoolean('allow_duplicate_keys')
 ignoreUnknownTags = options.getBoolean('ignore_unknown_tags')
+
+String allowedTagsInput = options.getString('allowed_tags')
+if (allowedTagsInput) {
+    allowedTags = allowedTagsInput.split(',')
+}
 
 if (debug) {
     Logger root = Logger.getLogger('')
