@@ -41,7 +41,7 @@ executors:
     <<: *work_directory
   machine-executor:
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2204:2023.04.2
     resource_class: medium
     <<: *work_directory
   arm-executor:
@@ -109,7 +109,7 @@ jobs:
 
   groovy_script_to_jar:
     docker:
-      - image: devatherock/vela-groovy-script-to-jar:0.7.0
+      - image: devatherock/scriptjar:2.0.0
         auth:
           username: $DOCKER_USERNAME
           password: $DOCKER_PASSWORD
@@ -129,7 +129,7 @@ jobs:
 
   java_to_native:
     docker:
-      - image: devatherock/java-to-native:2.2.0
+      - image: devatherock/java-to-native:3.0.0
         auth:
           username: $DOCKER_USERNAME
           password: $DOCKER_PASSWORD
@@ -163,7 +163,7 @@ jobs:
               --entrypoint='' \
               -e PARAMETER_JAR_NAME=build/native/libs/YamlValidator.jar \
               -e PARAMETER_CONFIG_FILE=config/graal.yml \
-              devatherock/java-to-native:2.2.0 sh -c "/scripts/entry-point.sh && upx -4 YamlValidator"
+              devatherock/java-to-native:3.0.0 sh -c "/scripts/entry-point.sh && upx -4 YamlValidator"
           TAG=${CIRCLE_SHA1:0:8}-arm64    
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker build \
@@ -188,9 +188,7 @@ jobs:
           docker image push --all-tags devatherock/drone-yaml-validator
           
   dockerhub_readme:
-    machine:
-      image: ubuntu-2204:2023.04.2
-      resource_class: medium
+    executor: machine-executor
     steps:
       - checkout
       - run: |

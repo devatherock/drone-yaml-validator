@@ -1,5 +1,5 @@
 docker_tag=latest
-java_to_native_version=2.1.0
+java_to_native_version=3.0.0
 
 clean:
 	./gradlew clean
@@ -16,7 +16,7 @@ jar-build:
 	-e PARAMETER_SCRIPT_PATH=YamlValidator.groovy \
 	-e PARAMETER_OUTPUT_FILE=build/native/libs/YamlValidator.jar \
 	-e PARAMETER_STATIC_COMPILE=true \
-	devatherock/vela-groovy-script-to-jar:0.7.0
+	devatherock/scriptjar:2.0.0
 binary-build:
 	docker run --rm \
 	-v $(CURDIR):/work \
