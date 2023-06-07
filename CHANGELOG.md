@@ -17,7 +17,8 @@
 - Cached build dependencies separately
 - Integration tested the arm image
 - [#106](https://github.com/devatherock/drone-yaml-validator/issues/106): Built the arm binary in an arm machine
-- Upgraded `java-to-native` to `2.2.0`
+- Upgraded `java-to-native` to `3.0.0`
+- [#103](https://github.com/devatherock/drone-yaml-validator/issues/103): Upgraded to `scriptjar` with groovy 3
 
 ## [2.1.0] - 2022-05-18
 ### Added
