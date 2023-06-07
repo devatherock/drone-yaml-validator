@@ -3,6 +3,7 @@ plugins {
     id 'jacoco'
     id 'com.github.kt3k.coveralls' version '2.12.2'
     id 'com.diffplug.spotless' version '6.19.0'
+    id 'org.owasp.dependencycheck' version '8.2.1'
 }
 
 repositories {
@@ -34,7 +35,11 @@ sourceSets {
     main {
         groovy {
             srcDirs = ['.']
-            exclude(['**/test/**', 'gradle/**'])
+            exclude([
+                '**/test/**',
+                'gradle/**',
+                'bin/**'
+            ])
         }
     }
 }
