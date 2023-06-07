@@ -3,14 +3,14 @@
 ## [Unreleased]
 ### Added
 - [#91](https://github.com/devatherock/drone-yaml-validator/issues/91): Allowed yamls with custom tags
+- Dependency check plugin, to scan for vulnerable dependencies
 
 ### Changed
 - fix(deps): update dependency org.objenesis:objenesis to v3.3
 - feat: Updated changelog updater user
-- chore(deps): update dependency gradle to v6.9.4
+- chore(deps): update dependency gradle to v7
 - chore(deps): update plugin com.github.kt3k.coveralls to v2.12.2
 - fix(deps): update dependency org.yaml:snakeyaml to v2
-- fix(deps): update dependency org.codehaus.groovy:groovy to v2.5.22
 - chore(deps): update alpine docker tag to v20230329
 - Updated dockerhub readme in CI pipeline
 - [#102](https://github.com/devatherock/drone-yaml-validator/issues/102): Built a multi-arch docker image

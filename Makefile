@@ -4,9 +4,9 @@ java_to_native_version=3.0.0
 clean:
 	./gradlew clean
 test:
-	./gradlew spotlessApply test --tests '*YamlValidatorSpec*'
+	./gradlew spotlessApply dependencyCheckAggregate test --tests '*YamlValidatorSpec*'
 coveralls:
-	./gradlew spotlessCheck test --tests '*YamlValidatorSpec*' coveralls
+	./gradlew spotlessCheck dependencyCheckAggregate test --tests '*YamlValidatorSpec*' coveralls
 functional-test:
 	DOCKER_TAG=$(docker_tag) ./gradlew test --tests '*YamlValidatorDockerSpec*' -x jacocoTestCoverageVerification
 jar-build:
