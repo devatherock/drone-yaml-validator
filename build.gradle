@@ -17,7 +17,7 @@ dependencies {
     def spockVersion = '2.3-groovy-3.0'
 
     // Groovy version should match the version used within scriptjar
-    implementation group: 'org.codehaus.groovy', name: 'groovy', version: '3.0.9'
+    implementation group: 'org.codehaus.groovy', name: 'groovy', version: '3.0.17'
 
     // Build dependency versions should match the ones used within the script
     implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
