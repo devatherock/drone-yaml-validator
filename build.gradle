@@ -14,7 +14,7 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 dependencies {
-    def spockVersion = '2.3-groovy-3.0'
+    def spockVersion = '2.3-groovy-4.0'
 
     // Groovy version should match the version used within scriptjar
     implementation group: 'org.codehaus.groovy', name: 'groovy', version: '3.0.9'
