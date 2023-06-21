@@ -1,23 +1,28 @@
+docker_auth: &docker_auth
+  auth:
+    username: $DOCKER_USERNAME
+    password: $DOCKER_PASSWORD
+
+attach_workspace: &attach_workspace
+  - attach_workspace:
+      at: ~/drone-yaml-validator
+
 slack_image: &slack_image
   docker:
     - image: devatherock/simple-slack:1.0.0
-      auth:
-        username: $DOCKER_USERNAME
-        password: $DOCKER_PASSWORD
-    
+      <<: *docker_auth
+
 yaml_validator_image: &yaml_validator_image
   docker:
     - image: devatherock/drone-yaml-validator:latest
-      auth:
-        username: $DOCKER_USERNAME
-        password: $DOCKER_PASSWORD
-        
+      <<: *docker_auth
+
 work_directory: &work_directory
   working_directory: ~/drone-yaml-validator
 
 resource_class: &resource_class
   resource_class: small
-  
+
 release_filter: &release_filter
   filters:
     branches:
@@ -34,9 +39,7 @@ executors:
   jdk-executor:
     docker:
       - image: cimg/openjdk:11.0
-        auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_PASSWORD
+        <<: *docker_auth
     <<: *resource_class
     <<: *work_directory
   machine-executor:
@@ -55,9 +58,7 @@ jobs:
   changelog_updater:
     docker:
     - image: devatherock/changelog-updater:0.1.0
-      auth:
-        username: $DOCKER_USERNAME
-        password: $DOCKER_PASSWORD
+      <<: *docker_auth
     <<: *resource_class
     environment:
       VELA_BUILD_AUTHOR: "renovate[bot]"
@@ -73,8 +74,7 @@ jobs:
     executor: jdk-executor
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
+      <<: *attach_workspace
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle" }}
@@ -85,13 +85,12 @@ jobs:
           path: build/reports/jacoco
       - store_test_results:
           path: build/test-results
-          
+
   build:
     executor: jdk-executor
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
+      <<: *attach_workspace
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle" }}
@@ -105,14 +104,12 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}          
+          key: v1-dependencies-{{ checksum "build.gradle" }}
 
   groovy_script_to_jar:
     docker:
       - image: devatherock/scriptjar:2.0.0
-        auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_PASSWORD
+        <<: *docker_auth
     <<: *resource_class
     <<: *work_directory
     environment:
@@ -130,9 +127,7 @@ jobs:
   java_to_native:
     docker:
       - image: devatherock/java-to-native:3.0.0
-        auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_PASSWORD
+        <<: *docker_auth
     resource_class: medium
     <<: *work_directory
     environment:
@@ -140,8 +135,7 @@ jobs:
       PLUGIN_CONFIG_FILE: config/graal.yml
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
+      <<: *attach_workspace
       - run: |
           sh /scripts/entry-point.sh
           upx -4 YamlValidator
@@ -154,8 +148,7 @@ jobs:
     executor: arm-executor
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
+      <<: *attach_workspace
       - run: |
           docker run --rm \
               -v $PWD:/work \
@@ -164,7 +157,7 @@ jobs:
               -e PARAMETER_JAR_NAME=build/native/libs/YamlValidator.jar \
               -e PARAMETER_CONFIG_FILE=config/graal.yml \
               devatherock/java-to-native:3.0.0 sh -c "/scripts/entry-point.sh && upx -4 YamlValidator"
-          TAG=${CIRCLE_SHA1:0:8}-arm64    
+          TAG=${CIRCLE_SHA1:0:8}-arm64
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker build \
             -t devatherock/drone-yaml-validator:$TAG \
@@ -176,8 +169,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - attach_workspace:
-          at: ~/drone-yaml-validator
+      <<: *attach_workspace
       - run: |
           TAG=${CIRCLE_SHA1:0:8}
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
@@ -186,19 +178,22 @@ jobs:
             -t devatherock/drone-yaml-validator:latest \
             -t devatherock/drone-yaml-validator:amd64 .
           docker image push --all-tags devatherock/drone-yaml-validator
-          
+
   dockerhub_readme:
-    executor: machine-executor
+    docker:
+      - image: peterevans/dockerhub-description:3.4.2
+        <<: *docker_auth
+    <<: *resource_class
+    <<: *work_directory
+    environment:
+      DOCKERHUB_REPOSITORY: 'devatherock/drone-yaml-validator'
+      SHORT_DESCRIPTION: 'CI plugin to validate yaml files'
+      README_FILEPATH: README.md
     steps:
       - checkout
+      <<: *attach_workspace
       - run: |
-          docker run -v $PWD:/workspace \
-              -e DOCKERHUB_USERNAME \
-              -e DOCKERHUB_PASSWORD \
-              -e DOCKERHUB_REPOSITORY='devatherock/drone-yaml-validator' \
-              -e SHORT_DESCRIPTION='CI plugin to validate yaml files' \
-              -e README_FILEPATH='/workspace/README.md' \
-              peterevans/dockerhub-description:3.4.1
+          sh /entrypoint.sh
 
   test_docker:
     <<: *yaml_validator_image
@@ -208,8 +203,7 @@ jobs:
       PARAMETER_SEARCH_PATH: "src/test/resources/data/valid"
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
+      <<: *attach_workspace
       - run: sh /scripts/entry-point.sh
 
   test_docker_duplicate_keys:
@@ -221,8 +215,7 @@ jobs:
       PARAMETER_ALLOW_DUPLICATE_KEYS: true
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
+      <<: *attach_workspace
       - run: sh /scripts/entry-point.sh
 
   test_docker_debug:
@@ -234,10 +227,9 @@ jobs:
       PARAMETER_SEARCH_PATH: "src/test/resources/data/valid"
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
+      <<: *attach_workspace
       - run: sh /scripts/entry-point.sh
-      
+
   functional_test:
     parameters:
       command_args:
@@ -247,8 +239,7 @@ jobs:
     executor: << parameters.runner >>
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/drone-yaml-validator
+      <<: *attach_workspace
       - restore_cache:
           keys:
             - v1-integration-{{ checksum "build.gradle" }}
@@ -261,14 +252,13 @@ jobs:
           paths:
             - ~/.gradle
           key: v1-integration-{{ checksum "build.gradle" }}
-      
+
   publish_release:
     executor: jdk-executor
     steps:
       - checkout
       - setup_remote_docker
-      - attach_workspace:
-          at: ~/drone-yaml-validator
+      <<: *attach_workspace
       - run: |
           TAG=${CIRCLE_TAG#v}
           DEV_TAG=${CIRCLE_SHA1:0:8}
