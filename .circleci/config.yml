@@ -3,9 +3,8 @@ docker_auth: &docker_auth
     username: $DOCKER_USERNAME
     password: $DOCKER_PASSWORD
 
-attach_workspace: &attach_workspace
-  - attach_workspace:
-      at: ~/drone-yaml-validator
+workspace: &workspace
+  at: ~/drone-yaml-validator
 
 slack_image: &slack_image
   docker:
@@ -34,6 +33,11 @@ pr_filter: &pr_filter
   filters:
     branches:
       ignore: master
+
+parameters:
+  repo_name:
+    type: string
+    default: "drone-yaml-validator"
 
 executors:
   jdk-executor:
@@ -74,7 +78,8 @@ jobs:
     executor: jdk-executor
     steps:
       - checkout
-      <<: *attach_workspace
+      - attach_workspace:
+          <<: *workspace
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle" }}
@@ -90,7 +95,8 @@ jobs:
     executor: jdk-executor
     steps:
       - checkout
-      <<: *attach_workspace
+      - attach_workspace:
+          <<: *workspace
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle" }}
@@ -135,7 +141,8 @@ jobs:
       PLUGIN_CONFIG_FILE: config/graal.yml
     steps:
       - checkout
-      <<: *attach_workspace
+      - attach_workspace:
+          <<: *workspace
       - run: |
           sh /scripts/entry-point.sh
           upx -4 YamlValidator
@@ -148,7 +155,8 @@ jobs:
     executor: arm-executor
     steps:
       - checkout
-      <<: *attach_workspace
+      - attach_workspace:
+          <<: *workspace
       - run: |
           docker run --rm \
               -v $PWD:/work \
@@ -169,7 +177,8 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      <<: *attach_workspace
+      - attach_workspace:
+          <<: *workspace
       - run: |
           TAG=${CIRCLE_SHA1:0:8}
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
@@ -186,12 +195,13 @@ jobs:
     <<: *resource_class
     <<: *work_directory
     environment:
-      DOCKERHUB_REPOSITORY: 'devatherock/drone-yaml-validator'
+      DOCKERHUB_REPOSITORY: 'devatherock/<< pipeline.parameters.repo_name >>'
       SHORT_DESCRIPTION: 'CI plugin to validate yaml files'
       README_FILEPATH: README.md
     steps:
       - checkout
-      <<: *attach_workspace
+      - attach_workspace:
+          <<: *workspace
       - run: |
           sh /entrypoint.sh
 
@@ -203,7 +213,8 @@ jobs:
       PARAMETER_SEARCH_PATH: "src/test/resources/data/valid"
     steps:
       - checkout
-      <<: *attach_workspace
+      - attach_workspace:
+          <<: *workspace
       - run: sh /scripts/entry-point.sh
 
   test_docker_duplicate_keys:
@@ -215,7 +226,8 @@ jobs:
       PARAMETER_ALLOW_DUPLICATE_KEYS: true
     steps:
       - checkout
-      <<: *attach_workspace
+      - attach_workspace:
+          <<: *workspace
       - run: sh /scripts/entry-point.sh
 
   test_docker_debug:
@@ -227,7 +239,8 @@ jobs:
       PARAMETER_SEARCH_PATH: "src/test/resources/data/valid"
     steps:
       - checkout
-      <<: *attach_workspace
+      - attach_workspace:
+          <<: *workspace
       - run: sh /scripts/entry-point.sh
 
   functional_test:
@@ -239,7 +252,8 @@ jobs:
     executor: << parameters.runner >>
     steps:
       - checkout
-      <<: *attach_workspace
+      - attach_workspace:
+          <<: *workspace
       - restore_cache:
           keys:
             - v1-integration-{{ checksum "build.gradle" }}
@@ -258,7 +272,8 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      <<: *attach_workspace
+      - attach_workspace:
+          <<: *workspace
       - run: |
           TAG=${CIRCLE_TAG#v}
           DEV_TAG=${CIRCLE_SHA1:0:8}
