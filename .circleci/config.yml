@@ -392,20 +392,8 @@ workflows:
 
   pr_check:
     jobs:
-      - changelog_updater:
+      - dockerhub_readme:
           context:
             - docker-credentials
-            - changelog-updater-credentials
+            - dockerhub-readme-credentials
           <<: *pr_filter
-      - test:
-          context:
-            - docker-credentials
-          <<: *pr_filter
-          requires:
-            - changelog_updater
-      - groovy_script_to_jar:
-          filters:
-            branches:
-              ignore: master
-          requires:
-            - test
