@@ -20,6 +20,7 @@
 - Upgraded `java-to-native` to `3.0.0`
 - [#103](https://github.com/devatherock/drone-yaml-validator/issues/103): Upgraded to `scriptjar` with groovy 3
 - chore(deps): update devatherock/simple-slack docker tag to v1
+- Made only HIGH bolt vulnerabilities create issues
 
 ## [2.1.0] - 2022-05-18
 ### Added
