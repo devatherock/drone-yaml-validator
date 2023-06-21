@@ -15,7 +15,7 @@ CI plugin to validate yaml files
 docker run --rm \
   -e PLUGIN_DEBUG=true \
   -v path/to/yamls:/work \
-  -w=/work \
+  -w /work \
   devatherock/drone-yaml-validator:latest
 ```
 
