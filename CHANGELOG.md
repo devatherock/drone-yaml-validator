@@ -22,6 +22,7 @@
 - chore(deps): update devatherock/simple-slack docker tag to v1
 - Made only HIGH bolt vulnerabilities create issues
 - chore(deps): update plugin org.owasp.dependencycheck to v8.3.1
+- chore(deps): update dependency gradle to v7.6.2
 
 ## [2.1.0] - 2022-05-18
 ### Added
