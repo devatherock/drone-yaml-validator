@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- fix(deps): update dependency org.codehaus.groovy:groovy to v3.0.18
+
+## [3.0.0] - 2023-07-07
 ### Added
 - [#91](https://github.com/devatherock/drone-yaml-validator/issues/91): Allowed yamls with custom tags
 - Dependency check plugin, to scan for vulnerable dependencies
