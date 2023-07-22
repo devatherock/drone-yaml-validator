@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- chore(deps): update plugin com.diffplug.spotless to v6.20.0
+
+## [3.0.0] - 2023-07-07
 ### Added
 - [#91](https://github.com/devatherock/drone-yaml-validator/issues/91): Allowed yamls with custom tags
 - Dependency check plugin, to scan for vulnerable dependencies
