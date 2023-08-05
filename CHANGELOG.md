@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - chore(deps): update plugin com.diffplug.spotless to v6.20.0
+- fix(deps): update dependency org.yaml:snakeyaml to v2.1
 
 ## [3.0.0] - 2023-07-07
 ### Added
