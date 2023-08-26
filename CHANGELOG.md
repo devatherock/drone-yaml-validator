@@ -4,6 +4,7 @@
 ### Changed
 - chore(deps): update plugin com.diffplug.spotless to v6.20.0
 - chore(deps): update plugin org.owasp.dependencycheck to v8.4.0
+- fix(deps): update dependency org.codehaus.groovy:groovy to v3.0.19
 
 ## [3.0.0] - 2023-07-07
 ### Added
