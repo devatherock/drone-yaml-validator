@@ -6,6 +6,7 @@
 - chore(deps): update plugin org.owasp.dependencycheck to v8.4.0
 - chore(deps): update plugin com.diffplug.spotless to v6.21.0
 - fix(deps): update dependency org.yaml:snakeyaml to v2.2
+- chore(deps): update dependency gradle to v7.6.3
 
 ## [3.0.0] - 2023-07-07
 ### Added
