@@ -74,24 +74,10 @@ jobs:
       - checkout
       - run: sh /scripts/entry-point.sh
 
-  test:
-    executor: jdk-executor
-    steps:
-      - checkout
-      - attach_workspace:
-          <<: *workspace
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            - v1-dependencies-
-      - run: |
-          make test
-      - store_artifacts:
-          path: build/reports/jacoco
-      - store_test_results:
-          path: build/test-results
-
   build:
+    parameters:
+      command_args:
+        type: string
     executor: jdk-executor
     steps:
       - checkout
@@ -101,8 +87,10 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "build.gradle" }}
             - v1-dependencies
-      - run: |
-          make coveralls
+      - run:
+          name: run commands
+          no_output_timeout: 60m
+          command: make << parameters.command_args >>
       - store_artifacts:
           path: build/reports/jacoco
       - store_test_results:
@@ -305,6 +293,8 @@ workflows:
       - build:
           context:
             - docker-credentials
+            - dependencycheck-credentials
+          command_args: 'coveralls'
           filters:
             branches:
               only: master
@@ -397,9 +387,12 @@ workflows:
             - docker-credentials
             - changelog-updater-credentials
           <<: *pr_filter
-      - test:
+      - build:
+          name: test
           context:
             - docker-credentials
+            - dependencycheck-credentials
+          command_args: 'test'
           <<: *pr_filter
           requires:
             - changelog_updater
