@@ -305,6 +305,7 @@ workflows:
       - build:
           context:
             - docker-credentials
+            - dependencycheck-credentials
           filters:
             branches:
               only: master
@@ -400,6 +401,7 @@ workflows:
       - test:
           context:
             - docker-credentials
+            - dependencycheck-credentials
           <<: *pr_filter
           requires:
             - changelog_updater
