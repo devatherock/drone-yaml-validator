@@ -9,6 +9,7 @@
 - chore(deps): update alpine docker tag to `3.18.4`
 - chore(deps): update plugin org.owasp.dependencycheck to v8.4.3
 - chore(deps): update plugin org.owasp.dependencycheck to v9
+- chore(deps): update alpine docker tag to v3.18.5
 
 ## [3.0.0] - 2023-07-07
 ### Added
