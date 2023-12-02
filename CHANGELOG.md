@@ -4,11 +4,11 @@
 ### Changed
 - fix(deps): update dependency org.yaml:snakeyaml to v2.2
 - chore(deps): update dependency gradle to v7.6.3
-- chore(deps): update plugin org.owasp.dependencycheck to v8.4.2
 - chore(deps): update plugin com.diffplug.spotless to v6.22.0
-- chore(deps): update alpine docker tag to `3.18.4`
-- chore(deps): update plugin org.owasp.dependencycheck to v8.4.3
-- chore(deps): update plugin org.owasp.dependencycheck to v9
+- chore(deps): update alpine docker tag to v3.18.5
+
+### Removed
+- Dependency check plugin
 
 ## [3.0.0] - 2023-07-07
 ### Added
