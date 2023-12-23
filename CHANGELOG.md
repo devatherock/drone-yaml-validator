@@ -9,6 +9,7 @@
 - chore(deps): update plugin com.diffplug.spotless to v6.23.2
 - chore(deps): update plugin com.diffplug.spotless to v6.23.3
 - chore(deps): update alpine docker tag to v3.19.0
+- fix(deps): update dependency org.codehaus.groovy:groovy to v3.0.20
 
 ### Removed
 - Dependency check plugin
