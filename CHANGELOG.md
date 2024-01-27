@@ -10,6 +10,7 @@
 - chore(deps): update plugin com.diffplug.spotless to v6.23.3
 - chore(deps): update alpine docker tag to v3.19.0
 - chore(deps): update plugin com.diffplug.spotless to v6.24.0
+- chore(deps): update alpine docker tag to v3.19.1
 
 ### Removed
 - Dependency check plugin
