@@ -5,6 +5,9 @@
 - Used `circleci-templates` to reduce circleci config
 - Scanned generated docker image using trivy
 
+### Changed
+- chore(deps): update cimg/openjdk docker tag to v11.0.22
+
 ## [3.1.0] - 2024-02-10
 ### Changed
 - fix(deps): update dependency org.yaml:snakeyaml to v2.2
