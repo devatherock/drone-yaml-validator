@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 ### Changed
+- test: Trivy scan
+
+## [3.1.0] - 2024-02-10
+### Changed
 - fix(deps): update dependency org.yaml:snakeyaml to v2.2
 - chore(deps): update dependency gradle to v7.6.3
 - chore(deps): update plugin com.diffplug.spotless to v6.22.0
