@@ -6,11 +6,6 @@ docker_auth: &docker_auth
 workspace: &workspace
   at: ~/drone-yaml-validator
 
-slack_image: &slack_image
-  docker:
-    - image: devatherock/simple-slack:1.0.0
-      <<: *docker_auth
-
 yaml_validator_image: &yaml_validator_image
   docker:
     - image: devatherock/drone-yaml-validator:latest
@@ -33,6 +28,9 @@ pr_filter: &pr_filter
   filters:
     branches:
       ignore: master
+
+orbs:
+  templates: devatherock/circleci-templates@0.5.0
 
 parameters:
   repo_name:
@@ -59,21 +57,6 @@ executors:
 
 version: 2.1
 jobs:
-  changelog_updater:
-    docker:
-    - image: devatherock/changelog-updater:0.1.0
-      <<: *docker_auth
-    <<: *resource_class
-    environment:
-      VELA_BUILD_AUTHOR: "renovate[bot]"
-      VELA_BUILD_AUTHOR_EMAIL: "29139614+renovate[bot]@users.noreply.github.com"
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "4a:86:fe:0e:c3:0e:ad:0d:1d:5c:3e:48:cf:28:39:5d"
-      - checkout
-      - run: sh /scripts/entry-point.sh
-
   build:
     parameters:
       command_args:
@@ -176,23 +159,6 @@ jobs:
             -t devatherock/drone-yaml-validator:amd64 .
           docker image push --all-tags devatherock/drone-yaml-validator
 
-  dockerhub_readme:
-    docker:
-      - image: peterevans/dockerhub-description:3.4.2
-        <<: *docker_auth
-    <<: *resource_class
-    <<: *work_directory
-    environment:
-      DOCKERHUB_REPOSITORY: 'devatherock/<< pipeline.parameters.repo_name >>'
-      SHORT_DESCRIPTION: 'CI plugin to validate yaml files'
-      README_FILEPATH: README.md
-    steps:
-      - checkout
-      - attach_workspace:
-          <<: *workspace
-      - run: |
-          sh /entrypoint.sh
-
   test_docker:
     <<: *yaml_validator_image
     <<: *resource_class
@@ -275,17 +241,6 @@ jobs:
           docker push devatherock/drone-yaml-validator:${TAG}-amd64
           docker push devatherock/drone-yaml-validator:${TAG}-arm64
 
-  notify_success:
-    <<: *slack_image
-    <<: *resource_class
-    environment:
-      TEXT: "Success: {{.CircleBuildUrl}} by {{.CircleUsername}}"
-      COLOR: "#33ad7f"
-      CHANNEL: general
-      TITLE: "Build completed"
-    steps:
-      - run: /bin/simpleslack
-
 workflows:
   version: 2.1
   build_publish:
@@ -318,27 +273,38 @@ workflows:
             - docker-credentials
           requires:
             - java_to_native
-      - dockerhub_readme:
+      - templates/image_scan:
+          name: image_scan
+          context:
+            - docker-credentials
+          image: devatherock/drone-yaml-validator:latest
+          requires:
+            - publish
+      - templates/dockerhub_readme_update:
+          name: dockerhub_readme
           context:
             - docker-credentials
             - dockerhub-readme-credentials
+          docker_image: '<< pipeline.parameters.repo_name >>'
+          image_description: 'CI plugin to validate yaml files'
+          work_dir: '~/<< pipeline.parameters.repo_name >>'
           requires:
             - publish_arm
       - test_docker:
           context:
             - docker-credentials
           requires:
-            - publish
+            - image_scan
       - test_docker_duplicate_keys:
           context:
             - docker-credentials
           requires:
-            - publish
+            - image_scan
       - test_docker_debug:
           context:
             - docker-credentials
           requires:
-            - publish
+            - image_scan
       - functional_test:
           name: functional_test_amd
           context:
@@ -346,7 +312,7 @@ workflows:
           runner: machine-executor
           command_args: ''
           requires:
-            - publish
+            - image_scan
       - functional_test:
           name: functional_test_arm
           context:
@@ -355,7 +321,8 @@ workflows:
           command_args: 'docker_tag=arm64'
           requires:
             - dockerhub_readme
-      - notify_success:
+      - templates/slack:
+          name: notify
           context:
             - docker-credentials
             - slack-webhook
@@ -372,7 +339,8 @@ workflows:
           context:
             - docker-credentials
           <<: *release_filter
-      - notify_success:
+      - templates/slack:
+          name: notify
           context:
             - docker-credentials
             - slack-webhook
@@ -382,7 +350,8 @@ workflows:
 
   pr_check:
     jobs:
-      - changelog_updater:
+      - templates/changelog_updater:
+          name: changelog_updater
           context:
             - docker-credentials
             - changelog-updater-credentials

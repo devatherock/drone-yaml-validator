@@ -1,15 +1,14 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Used `circleci-templates` to reduce circleci config
+- Scanned generated docker image using trivy
+
+## [3.1.0] - 2024-02-10
 ### Changed
 - fix(deps): update dependency org.yaml:snakeyaml to v2.2
 - chore(deps): update dependency gradle to v7.6.3
-- chore(deps): update plugin com.diffplug.spotless to v6.22.0
-- chore(deps): update alpine docker tag to v3.18.5
-- chore(deps): update plugin com.diffplug.spotless to v6.23.2
-- chore(deps): update plugin com.diffplug.spotless to v6.23.3
-- chore(deps): update alpine docker tag to v3.19.0
-- chore(deps): update plugin com.diffplug.spotless to v6.24.0
 - chore(deps): update alpine docker tag to v3.19.1
 - chore(deps): update plugin com.diffplug.spotless to v6.25.0
 
