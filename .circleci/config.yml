@@ -34,6 +34,9 @@ pr_filter: &pr_filter
     branches:
       ignore: master
 
+orbs:
+  templates: devatherock/circleci-templates@dev:alpha      
+
 parameters:
   repo_name:
     type: string
@@ -397,8 +400,14 @@ workflows:
           requires:
             - changelog_updater
       - groovy_script_to_jar:
-          filters:
-            branches:
-              ignore: master
+          <<: *pr_filter
           requires:
             - test
+      - templates/image_scan:
+          name: image_scan
+          context:
+            - docker-credentials
+          image: devatherock/drone-yaml-validator:latest
+          <<: *pr_filter
+          requires:
+            - groovy_script_to_jar
