@@ -8,6 +8,7 @@
 ### Changed
 - chore(deps): update cimg/openjdk docker tag to v11.0.22
 - chore(deps): update dependency gradle to v7.6.4
+- fix(deps): update dependency org.codehaus.groovy:groovy to v3.0.21
 
 ## [3.1.0] - 2024-02-10
 ### Changed
