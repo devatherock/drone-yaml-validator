@@ -8,6 +8,7 @@
 ### Changed
 - chore(deps): update cimg/openjdk docker tag to v11.0.22
 - chore(deps): update dependency gradle to v7.6.4
+- chore(deps): update templates orb to v0.6.0
 
 ## [3.1.0] - 2024-02-10
 ### Changed
