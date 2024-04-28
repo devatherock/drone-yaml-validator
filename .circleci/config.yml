@@ -245,14 +245,21 @@ workflows:
   version: 2.1
   build_publish:
     jobs:
+      - templates/slack:
+          name: notify
+          context:
+            - docker-credentials
+            - slack-webhook
+          filters:
+            branches:
+              only: master
       - build:
           context:
             - docker-credentials
             - dependencycheck-credentials
           command_args: 'coveralls'
-          filters:
-            branches:
-              only: master
+          requires:
+            - notify
       - groovy_script_to_jar:
           context:
             - docker-credentials
@@ -321,32 +328,21 @@ workflows:
           command_args: 'docker_tag=arm64'
           requires:
             - dockerhub_readme
+
+  release:
+    jobs:
       - templates/slack:
           name: notify
           context:
             - docker-credentials
             - slack-webhook
-          requires:
-            - test_docker
-            - test_docker_duplicate_keys
-            - test_docker_debug
-            - functional_test_amd
-            - functional_test_arm
-
-  release:
-    jobs:
+          <<: *release_filter   
       - publish_release:
           context:
             - docker-credentials
           <<: *release_filter
-      - templates/slack:
-          name: notify
-          context:
-            - docker-credentials
-            - slack-webhook
-          <<: *release_filter
           requires:
-            - publish_release
+            - notify
 
   pr_check:
     jobs:

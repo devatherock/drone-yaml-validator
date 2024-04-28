@@ -1,5 +1,6 @@
 docker_tag=latest
 java_to_native_version=3.0.0
+cache_dir=~
 
 clean:
 	./gradlew clean
@@ -27,3 +28,11 @@ binary-build:
 	devatherock/java-to-native:$(java_to_native_version) sh /scripts/entry-point.sh && upx -4 YamlValidator
 docker-build:
 	docker build -t devatherock/drone-yaml-validator:$(docker_tag) .
+image-scan:
+	docker run --rm \
+	-v $(cache_dir):/cache \
+	-v /var/run/docker.sock:/var/run/docker.sock \
+	--entrypoint='' \
+	aquasec/trivy:0.49.1 \
+	trivy --cache-dir /cache \
+		image devatherock/drone-yaml-validator:$(docker_tag) --ignore-unfixed
