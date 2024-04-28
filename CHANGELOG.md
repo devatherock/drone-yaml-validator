@@ -9,6 +9,8 @@
 - chore(deps): update cimg/openjdk docker tag to v11.0.22
 - chore(deps): update dependency gradle to v7.6.4
 - chore(deps): update templates orb to v0.6.0
+- Used `busybox` as the base image
+- Built the native binary in quick build mode, to reduce build time
 
 ## [3.1.0] - 2024-02-10
 ### Changed

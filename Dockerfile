@@ -1,7 +1,7 @@
-FROM alpine:3.19.1
+FROM busybox:1.36.1-musl
 
 LABEL maintainer="devatherock@gmail.com"
-LABEL io.github.devatherock.version="3.0.0"
+LABEL io.github.devatherock.version="3.2.0"
 
 COPY entry-point.sh /scripts/
 COPY YamlValidator /scripts/yamlvalidator

@@ -3,6 +3,7 @@ native-image:
     additional-args:
       - "-J-Xmx3072m"
       - "-H:IncludeResourceBundles=net.sourceforge.argparse4j.internal.ArgumentParserImpl"
+      - "-Ob" # Quick build mode
   agent:
     args:
       - ['--debug', 'false', '--path', 'src/test/resources/data/valid']
