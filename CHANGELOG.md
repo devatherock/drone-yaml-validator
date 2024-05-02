@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Updated `circleci-templates` orb to `0.7.0`
+
+## [3.2.0] - 2024-05-01
 ### Added
 - Used `circleci-templates` to reduce circleci config
 - Scanned generated docker image using trivy
@@ -8,7 +12,6 @@
 ### Changed
 - chore(deps): update cimg/openjdk docker tag to v11.0.22
 - chore(deps): update dependency gradle to v7.6.4
-- chore(deps): update templates orb to v0.6.0
 - Used `busybox` as the base image
 - Built the native binary in quick build mode, to reduce build time
 - Combined the amd64 and arm64 images into a single multi-arch image
