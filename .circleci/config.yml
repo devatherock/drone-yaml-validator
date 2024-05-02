@@ -34,7 +34,7 @@ pr_filter: &pr_filter
       ignore: master
 
 orbs:
-  templates: devatherock/circleci-templates@dev:alpha
+  templates: devatherock/circleci-templates@dev:afae1e0ce800bfeefacc8746e98f0b78074c81ae
 
 parameters:
   repo_name:
@@ -77,7 +77,7 @@ jobs:
           no_output_timeout: 60m
           command: make << parameters.command_args >>
       - store_artifacts:
-          path: build/reports/jacoco
+          path: build/reports
       - store_test_results:
           path: build/test-results
       - save_cache:
