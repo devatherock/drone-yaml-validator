@@ -11,6 +11,7 @@
 - chore(deps): update templates orb to v0.6.0
 - Used `busybox` as the base image
 - Built the native binary in quick build mode, to reduce build time
+- Combined the amd64 and arm64 images into a single multi-arch image
 
 ## [3.1.0] - 2024-02-10
 ### Changed
