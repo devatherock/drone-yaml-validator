@@ -3,6 +3,10 @@ docker_auth: &docker_auth
     username: $DOCKER_USERNAME
     password: $DOCKER_PASSWORD
 
+vm_executor_image: &vm_executor_image
+  machine:
+    image: ubuntu-2204:2023.04.2    
+
 workspace: &workspace
   at: ~/drone-yaml-validator
 
@@ -30,7 +34,7 @@ pr_filter: &pr_filter
       ignore: master
 
 orbs:
-  templates: devatherock/circleci-templates@0.6.0
+  templates: devatherock/circleci-templates@dev:alpha
 
 parameters:
   repo_name:
@@ -45,13 +49,11 @@ executors:
     <<: *resource_class
     <<: *work_directory
   machine-executor:
-    machine:
-      image: ubuntu-2204:2023.04.2
+    <<: *vm_executor_image
     resource_class: medium
     <<: *work_directory
   arm-executor:
-    machine:
-      image: ubuntu-2004:2022.04.1
+    <<: *vm_executor_image
     resource_class: arm.medium
     <<: *work_directory
 
@@ -151,11 +153,10 @@ jobs:
       - attach_workspace:
           <<: *workspace
       - run: |
-          TAG=${CIRCLE_SHA1:0:8}
+          TAG=${CIRCLE_SHA1:0:8}-amd64
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker build \
             -t devatherock/drone-yaml-validator:$TAG \
-            -t devatherock/drone-yaml-validator:latest \
             -t devatherock/drone-yaml-validator:amd64 .
           docker image push --all-tags devatherock/drone-yaml-validator
 
@@ -199,8 +200,6 @@ jobs:
 
   functional_test:
     parameters:
-      command_args:
-        type: string
       runner:
         type: executor
     executor: << parameters.runner >>
@@ -213,7 +212,7 @@ jobs:
             - v1-integration-{{ checksum "build.gradle" }}
             - v1-integration-
       - run: |
-          make functional-test << parameters.command_args >>
+          make functional-test
       - store_test_results:
           path: build/test-results
       - save_cache:
@@ -232,14 +231,11 @@ jobs:
           TAG=${CIRCLE_TAG#v}
           DEV_TAG=${CIRCLE_SHA1:0:8}
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-          docker pull devatherock/drone-yaml-validator:$DEV_TAG
-          docker tag devatherock/drone-yaml-validator:$DEV_TAG devatherock/drone-yaml-validator:$TAG
-          docker tag devatherock/drone-yaml-validator:$DEV_TAG devatherock/drone-yaml-validator:${TAG}-amd64
-          docker pull devatherock/drone-yaml-validator:${DEV_TAG}-arm64
-          docker tag devatherock/drone-yaml-validator:${DEV_TAG}-arm64 devatherock/drone-yaml-validator:${TAG}-arm64
-          docker push devatherock/drone-yaml-validator:$TAG
-          docker push devatherock/drone-yaml-validator:${TAG}-amd64
-          docker push devatherock/drone-yaml-validator:${TAG}-arm64
+          docker buildx create --name rockbuilder \
+            --driver docker-container --use --bootstrap
+          docker buildx imagetools create \
+            -t devatherock/<< pipeline.parameters.repo_name >>:$TAG \
+            devatherock/<< pipeline.parameters.repo_name >>:$DEV_TAG
 
 workflows:
   version: 2.1
@@ -280,13 +276,21 @@ workflows:
             - docker-credentials
           requires:
             - java_to_native
+      - templates/image_merge:
+          name: publish_multi_arch
+          context:
+            - docker-credentials
+          docker_image: '<< pipeline.parameters.repo_name >>'
+          requires:
+            - publish
+            - publish_arm
       - templates/image_scan:
           name: image_scan
           context:
             - docker-credentials
-          image: devatherock/drone-yaml-validator:latest
+          image: devatherock/<< pipeline.parameters.repo_name >>:latest
           requires:
-            - publish
+            - publish_multi_arch
       - templates/dockerhub_readme_update:
           name: dockerhub_readme
           context:
@@ -296,7 +300,7 @@ workflows:
           image_description: 'CI plugin to validate yaml files'
           work_dir: '~/<< pipeline.parameters.repo_name >>'
           requires:
-            - publish_arm
+            - publish_multi_arch
       - test_docker:
           context:
             - docker-credentials
@@ -317,7 +321,6 @@ workflows:
           context:
             - docker-credentials
           runner: machine-executor
-          command_args: ''
           requires:
             - image_scan
       - functional_test:
@@ -325,7 +328,6 @@ workflows:
           context:
             - docker-credentials
           runner: arm-executor
-          command_args: 'docker_tag=arm64'
           requires:
             - dockerhub_readme
 
