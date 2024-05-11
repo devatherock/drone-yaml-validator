@@ -26,7 +26,7 @@ dependencies {
     testImplementation group: 'org.spockframework', name: 'spock-junit4', version: spockVersion // For Junit @Rule to work in Spock 2
     testImplementation group: 'junit', name: 'junit', version: '4.13.2' // Added to fix security vulnerability
     testImplementation group: 'cglib', name: 'cglib-nodep', version: '3.3.0'
-    testImplementation group: 'org.objenesis', name: 'objenesis', version: '3.3'
+    testImplementation group: 'org.objenesis', name: 'objenesis', version: '3.4'
     testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
 }
 
