@@ -4,6 +4,7 @@
 ### Changed
 - Updated `circleci-templates` orb to `0.7.0`
 - fix(deps): update dependency org.objenesis:objenesis to v3.4
+- fix(deps): update dependency org.yaml:snakeyaml to v2.3
 
 ## [3.2.0] - 2024-05-01
 ### Added
