@@ -1,4 +1,4 @@
-@Grab(group = 'org.yaml', module = 'snakeyaml', version = '2.2')
+@Grab(group = 'org.yaml', module = 'snakeyaml', version = '2.3')
 @Grab(group = 'net.sourceforge.argparse4j', module = 'argparse4j', version = '0.9.0')
 
 import java.util.logging.Level
