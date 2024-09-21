@@ -19,7 +19,7 @@ dependencies {
     implementation group: 'org.codehaus.groovy', name: 'groovy', version: '3.0.9'
 
     // Build dependency versions should match the ones used within the script
-    implementation group: 'org.yaml', name: 'snakeyaml', version: '2.2'
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '2.3'
     implementation group: 'net.sourceforge.argparse4j', name: 'argparse4j', version: '0.9.0'
 
     testImplementation group: 'org.spockframework', name: 'spock-core', version: spockVersion
