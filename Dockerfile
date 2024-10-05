@@ -1,4 +1,4 @@
-FROM busybox:1.36.1-musl
+FROM busybox:1.37.0-musl
 
 LABEL maintainer="devatherock@gmail.com"
 LABEL io.github.devatherock.version="3.3.0"
