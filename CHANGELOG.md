@@ -6,6 +6,7 @@
 - fix(deps): update dependency org.objenesis:objenesis to v3.4
 - fix(deps): update dependency org.yaml:snakeyaml to v2.3
 - chore(deps): update busybox docker tag to v1.37.0
+- chore(deps): update plugin com.diffplug.spotless to v7
 
 ## [3.2.0] - 2024-05-01
 ### Added
